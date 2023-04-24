@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "typedparser"
+description = "Extension for python argparse with typehints and typechecks."
+readme = "README.md"
+authors = [{ "name" = "gingsi" }]
+requires-python = ">=3.7"
+license = { text = "Apache-2.0" }
+keywords = ["attrs", "typing", "dict", "attr"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Version Control :: Git"
+]
+dynamic = ["version", "dependencies"]
+
+[project.urls]
+Project-URL = "https://github.com/gingsi/typedparser"
+
+[tool.setuptools]
+zip-safe = true
+platforms = ["any"]
+include-package-data = false
+
+[tool.setuptools.dynamic]
+version = { attr = "typedparser.__version__" }
+dependencies = {file = ["requirements.txt"]}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source_pkgs = ["typedparser"]
+branch = true
+
+[tool.coverage.report]
+skip_empty = true
+
+[tool.coverage.html]
+directory = ".covreport"
+
+[tool.coverage.xml]
+output = ".covreport/coverage.xml"
+
+[tool.pylint.main]
+jobs = 1
+
+[tool.pylint.messages_control]
+
+enable = "all"
+
+disable = [
+    'suppressed-message', 'locally-disabled', 'line-too-long', 'missing-module-docstring',
+    'missing-class-docstring', 'missing-function-docstring', 'fixme',
+    'f-string-without-interpolation', 'invalid-name',
+    'logging-fstring-interpolation', 'consider-iterating-dictionary',
+    'use-implicit-booleaness-not-comparison',
+    'attribute-defined-outside-init', 'consider-using-with', 'global-statement',
+    'import-outside-toplevel', 'super-init-not-called', 'broad-exception-caught',
+    'disallowed-name', 'redefined-outer-name', ]
+
+[tool.pylint.format]
+max-line-length = 99999
+max-module-lines = 99999
+
+[tool.pylint.refactoring]
+max-nested-blocks = 9999
+
+[tool.pylint.design]
+max-args = 9999
+max-attributes = 9999
+max-bool-expr = 9999
+max-branches = 9999
+max-locals = 9999
+max-parents = 9999
+max-public-methods = 9999
+max-returns = 9999
+max-statements = 9999
+min-public-methods = 0
