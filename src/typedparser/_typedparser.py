@@ -4,7 +4,7 @@ from typing import Optional, Any, Type
 
 from attr import field, define
 
-from typedattr.typeutils import AttrsClass
+from typedattr.typext import AttrsClass
 from .custom_format import CustomArgparseFmt
 from .funcs import parse_typed_args, add_typed_args
 
