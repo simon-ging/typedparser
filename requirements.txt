@@ -1,5 +1,2 @@
 attrs
 numpy
-joblib
-importlib_resources
-loguru
