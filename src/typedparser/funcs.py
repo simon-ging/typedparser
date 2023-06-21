@@ -4,8 +4,8 @@ from typing import Any, Dict
 from attr import AttrsInstance
 from attrs import has, fields_dict
 
-from typedattr import attrs_from_dict, get_attr_names
-from typedattr.utils import format_exception
+from ._typedattr import attrs_from_dict
+from .objects import get_attr_names
 
 
 def add_typed_args(parser: argparse.ArgumentParser, typed_args_class) -> None:
@@ -55,12 +55,12 @@ def add_typed_args(parser: argparse.ArgumentParser, typed_args_class) -> None:
             raise TypeError(
                 f"Error adding argument {field_name} to parser, maybe passed keyword argument "
                 f"that is incompatible with parser.add_arguments(). "
-                f"Original error: {format_exception(e)}") from e
+                f"Original error was {type(e).__name__}: {e}") from e
         except argparse.ArgumentError as e:
             raise ValueError(
                 f"In case of conflicting option strings, make sure to not create a TypedParser "
                 f"twice with the same argparser ArgumentParser. "
-                f"Original error: {format_exception(e)}") from e
+                f"Original error was {type(e).__name__}: {e}") from e
 
 
 def parse_typed_args(args: argparse.Namespace, typed_args_class, strict: bool = True
