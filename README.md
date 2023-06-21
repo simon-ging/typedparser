@@ -13,7 +13,8 @@
 </a>
 </p>
 
-Typing extension for python argparse using [attrs](https://www.attrs.org/en/stable/)
+Typing extension for python argparse using [attrs](https://www.attrs.org/en/stable/).
+
 Includes typechecking and conversion utilities to parse a dictionary into an attrs instance. 
 
 ## Features
