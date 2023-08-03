@@ -1,9 +1,22 @@
 import collections
+from abc import abstractmethod
 from functools import partial
 from inspect import isclass
 from pathlib import Path
 from typing import (
-    Tuple, Union, Dict, AbstractSet, Iterable, Mapping, Collection, Type, Any, List, Optional)
+    Tuple,
+    Union,
+    Dict,
+    AbstractSet,
+    Iterable,
+    Mapping,
+    Collection,
+    Type,
+    Any,
+    List,
+    Optional,
+    overload,
+)
 
 import attrs
 from attr import has, AttrsInstance
@@ -50,11 +63,25 @@ def definenumpy(maybe_cls: Union[bool, Type] = False, **kwargs):
     return wrap
 
 
+class NamedTupleMixin:
+    def __iter__(self):
+        return (getattr(self, att.name) for att in fields(type(self)))
+
+    def __getitem__(self, index_or_slice: int):
+        return tuple(self)[index_or_slice]
+
+    def __len__(self) -> int:
+        return len(fields(type(self)))
+
+
 def attrs_from_dict(
-        cls: AttrsClass, input_dict_or_attrs_inst: Union[Dict, AttrsInstance],
-        strict: bool = True, skip_unknowns: bool = False,
-        recursor_class: Type[RecursorInterface] = StrictRecursor,
-        conversions: Optional[conversion_type] = None) -> AttrsInstance:
+    cls: AttrsClass,
+    input_dict_or_attrs_inst: Union[Dict, AttrsInstance],
+    strict: bool = True,
+    skip_unknowns: bool = False,
+    recursor_class: Type[RecursorInterface] = StrictRecursor,
+    conversions: Optional[conversion_type] = None,
+) -> AttrsInstance:
     """
     Create typechecked attrs instance from dictionary or existing attrs instance.
 
@@ -74,29 +101,47 @@ def attrs_from_dict(
     """
     recursor = recursor_class()
     try:
-        return _attrs_from_dict(recursor, cls, input_dict_or_attrs_inst, strict=strict,
-                                skip_unknowns=skip_unknowns, conversions=conversions)
+        return _attrs_from_dict(
+            recursor,
+            cls,
+            input_dict_or_attrs_inst,
+            strict=strict,
+            skip_unknowns=skip_unknowns,
+            conversions=conversions,
+        )
     except TypeError as e:
-        raise TypeError(f"Error parsing {cls} from {input_dict_or_attrs_inst}, see the original "
-                        f"error above.") from e
+        raise TypeError(
+            f"Error parsing {cls} from {input_dict_or_attrs_inst}, see the original "
+            f"error above."
+        ) from e
 
 
 def _attrs_from_dict(
-        recursor: RecursorInterface, cls: AttrsClass, input_dict_or_attrs: Union[Dict, object],
-        strict: bool = False, skip_unknowns: bool = False,
-        conversions: Optional[conversion_type] = None):
+    recursor: RecursorInterface,
+    cls: AttrsClass,
+    input_dict_or_attrs: Union[Dict, object],
+    strict: bool = False,
+    skip_unknowns: bool = False,
+    conversions: Optional[conversion_type] = None,
+):
     _print_fn(f"Parsing {cls} from {input_dict_or_attrs}")
     input_cls = type(input_dict_or_attrs)
     if has(input_cls):
         # if given an attrs instance, convert it to dict and then
         # parse it for conversions and typechecking
-        assert input_cls == cls, (
-            f"Mismatch: Trying to parse input of type {input_cls} as type {cls}")
+        assert (
+            input_cls == cls
+        ), f"Mismatch: Trying to parse input of type {input_cls} as type {cls}"
         input_fields_dict = fields_dict(type(input_dict_or_attrs))
         input_dict: Dict[str, Any] = {k: getattr(input_dict_or_attrs, k) for k in input_fields_dict}
         return _attrs_from_dict(
-            recursor, input_cls, input_dict, strict=strict, skip_unknowns=skip_unknowns,
-            conversions=conversions)
+            recursor,
+            input_cls,
+            input_dict,
+            strict=strict,
+            skip_unknowns=skip_unknowns,
+            conversions=conversions,
+        )
 
     input_dict: Dict[str, Any] = input_dict_or_attrs
     if input_dict is None:
@@ -139,15 +184,24 @@ def _attrs_from_dict(
         name = att.name
         value = getattr(attrs_inst, name)
         typ = att.type
-        new_value = _parse_nested(recursor, name, value, typ, strict=strict,
-                                  skip_unknowns=skip_unknowns, conversions=conversions)
+        new_value = _parse_nested(
+            recursor,
+            name,
+            value,
+            typ,
+            strict=strict,
+            skip_unknowns=skip_unknowns,
+            conversions=conversions,
+        )
         setattr(attrs_inst, name, new_value)
 
     # handle unknown fields
     if len(nonmatching_input) > 0 and not skip_unknowns:
         if strict:
-            raise TypeError(f"Keys in input {list(nonmatching_input.keys())} not defined "
-                            f"for class {cls} with attributes {sorted(all_att_names)}")
+            raise TypeError(
+                f"Keys in input {list(nonmatching_input.keys())} not defined "
+                f"for class {cls} with attributes {sorted(all_att_names)}"
+            )
         for key, value in nonmatching_input.items():
             if skip_unknowns:
                 break
@@ -158,15 +212,23 @@ def _attrs_from_dict(
                 raise AttributeError(
                     f"Field {key} is missing from configuration {cls}. Either add it to the "
                     f"configuration or decorate with @attrs.define(slots=False) to allow adding "
-                    f"unknown fields or set skip_unknowns=True to ignore them.") from e
+                    f"unknown fields or set skip_unknowns=True to ignore them."
+                ) from e
 
     _print_fn(f"Output of _attrs_from_dict: {attrs_inst}")
     return attrs_inst
 
 
-def _parse_nested(recursor: RecursorInterface, name, value, typ,
-                  strict: bool = True, skip_unknowns: bool = False,
-                  conversions: conversion_type = None, depth: int = 0):
+def _parse_nested(
+    recursor: RecursorInterface,
+    name,
+    value,
+    typ,
+    strict: bool = True,
+    skip_unknowns: bool = False,
+    conversions: conversion_type = None,
+    depth: int = 0,
+):
     conversions = default_conversions if conversions is None else conversions
     parse_recursive = partial(_parse_nested, recursor, depth=depth + 1, skip_unknowns=skip_unknowns)
 
@@ -176,10 +238,11 @@ def _parse_nested(recursor: RecursorInterface, name, value, typ,
     target_type_name = typ.__name__ if hasattr(typ, "__name__") else str(typ)
     value_type = type(value)
     value_type_name = value_type.__name__ if hasattr(value_type, "__name__") else str(value_type)
-    err_msg = (f"Could not parse {name}={value} (type {value_type_name}) as type "
-               f"{target_type_name} with strict={strict} "
-               # f"depth={depth} type annotation origin={origin} args={args}"
-               )
+    err_msg = (
+        f"Could not parse {name}={value} (type {value_type_name}) as type "
+        f"{target_type_name} with strict={strict} "
+        # f"depth={depth} type annotation origin={origin} args={args}"
+    )
 
     def maybe_raise_typeerorr(full_err_msg):
         if strict:
@@ -189,8 +252,14 @@ def _parse_nested(recursor: RecursorInterface, name, value, typ,
 
     # resolve nested attrclass
     if has(typ):
-        return _attrs_from_dict(recursor, typ, value, strict=strict, skip_unknowns=skip_unknowns,
-                                conversions=conversions)
+        return _attrs_from_dict(
+            recursor,
+            typ,
+            value,
+            strict=strict,
+            skip_unknowns=skip_unknowns,
+            conversions=conversions,
+        )
 
     # resolve any
     if typ == Any:
@@ -217,7 +286,8 @@ def _parse_nested(recursor: RecursorInterface, name, value, typ,
                 return maybe_raise_typeerorr(f"{err_msg}. Expect a sequence, got {type(value)}")
             if len(value) != len(args):
                 return maybe_raise_typeerorr(
-                    f"{err_msg}. Expect a sequence with length {len(args)}, got length {len(value)}")
+                    f"{err_msg}. Expect a sequence with length {len(args)}, got length {len(value)}"
+                )
             new_tuple = []
             for item, item_type in zip(value, args):
                 new_tuple.append(parse_recursive(name, item, item_type, strict=strict))
@@ -242,7 +312,8 @@ def _parse_nested(recursor: RecursorInterface, name, value, typ,
 
         for key, val in value.items():
             dict_output[parse_recursive(name, key, dict_keytype, strict=strict)] = parse_recursive(
-                name, val, dict_valuetype, strict=strict)
+                name, val, dict_valuetype, strict=strict
+            )
 
         return dict_output
 
