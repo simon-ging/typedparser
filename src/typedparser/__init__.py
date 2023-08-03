@@ -6,13 +6,13 @@ from .objects import get_attr_names
 __all__ = [
     "definenumpy",
     "attrs_from_dict",
-    "get_attr_names",
+    "NamedTupleMixin",
     "add_argument",
     "TypedParser",
     "define",
     "VerboseQuietArgs",
     "CustomArgparseFmt",
-    "NamedTupleMixin",
+    "get_attr_names",
 ]
-__version__ = "0.2.26"
+__version__ = "0.2.27"
 
