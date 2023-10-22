@@ -1,3 +1,5 @@
+# pylint: disable=unsubscriptable-object
+
 import sys
 from typing import Optional
 
