@@ -138,5 +138,5 @@ jobs:
     - name: Run pylint
       continue-on-error: true
       run: |
-        pylint typedattr
+        pylint src
         pylint tests

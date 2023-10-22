@@ -142,19 +142,15 @@ The following behaviour stems from the `attrs` package:
 
 ## Install locally and run tests
 
-Clone repository and cd into, then:
+Clone repository and cd into. Setup python 3.7 or higher. 
+Note: Some tests are skipped for python 3.7.
 
 ~~~bash
 pip install -e .
 pip install pytest pytest-cov pylint pytest-lazy-fixture
 pylint typedparser
 
-# run tests for python>=3.7
+# run tests
 python -m pytest --cov
 pylint tests
-
-# run tests for python>=3.9
-python -m pytest tests tests_py39 --cov
-pylint tests 
-pylint tests_py39
 ~~~

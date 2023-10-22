@@ -133,12 +133,11 @@ jobs:
 #
     - name: Run pytest
       run: |
-        python -m pytest tests tests_py39 --cov
+        python -m pytest tests --cov
 #
     - name: Run pylint
       continue-on-error: true
       run: |
         pylint src
         pylint tests
-        pylint tests_py39
 #
