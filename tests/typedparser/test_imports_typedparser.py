@@ -161,7 +161,7 @@ def apply_visitor(module: str, visitor: NodeVisitor) -> None:
 
 # end copy paste
 
-import pytest
+import pytest  # pylint: disable=wrong-import-position
 
 module_list = list(recurse_modules("typedparser", ignore_tests=True, packages_only=False))
 

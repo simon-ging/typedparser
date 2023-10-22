@@ -1,9 +1,14 @@
+"""
+Duplicate of test_typedparser_py39.py with added future annotations
+"""
+# pylint: disable=duplicate-code
+
 from __future__ import annotations
 
+import sys
 from typing import Optional
 
 import pytest
-import sys
 
 from typedparser import add_argument, TypedParser, define
 from typedparser.funcs import check_args_for_pytest
@@ -22,6 +27,5 @@ if sys.version_info >= (3, 9):
         ),
     )
     def test_action_extend(args_input, gt_dict):
-
         args = TypedParser.create_parser(arg_config, strict=True).parse_args(args_input)
         check_args_for_pytest(args, gt_dict)

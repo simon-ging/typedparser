@@ -1,6 +1,8 @@
 """
-Note: Cannot use local classes here it seems
+Duplicate of test_typedparser.py with added future annotations
 """
+# pylint: disable=duplicate-code
+
 from __future__ import annotations
 
 import argparse

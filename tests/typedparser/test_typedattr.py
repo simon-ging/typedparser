@@ -432,7 +432,7 @@ def test_namedtuplemixin():
 
     assert 12 in tu
     with pytest.raises(TypeError):
-        assert 12 in no
+        assert 12 in no  # pylint: disable=unsupported-membership-test
 
     assert isinstance(hash(tuple(tu)), int)
 

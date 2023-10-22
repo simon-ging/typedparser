@@ -1,6 +1,8 @@
 """
-Same as test_typedattr.py except added future annotations import.
+Duplicate of test_typedattr.py with added future annotations
 """
+# pylint: disable=duplicate-code
+
 from __future__ import annotations
 
 from collections import defaultdict
@@ -437,7 +439,7 @@ def test_namedtuplemixin():
 
     assert 12 in tu
     with pytest.raises(TypeError):
-        assert 12 in no
+        assert 12 in no  # pylint: disable=unsupported-membership-test
 
     assert isinstance(hash(tuple(tu)), int)
 
