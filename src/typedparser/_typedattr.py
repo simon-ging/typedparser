@@ -15,7 +15,6 @@ from typing import (
     List,
     Optional,
     get_type_hints,
-    Callable,
 )
 
 import attrs

@@ -199,7 +199,7 @@ def compare_nested_objects(
 
     def _compare_nested_objects(d1, d2, depth: int = 0, prefix=""):
         # prefix = {' ' * depth}
-        if type(d1) != type(d2):  # pylint: disable=unidiomatic-typecheck
+        if type(d1) != type(d2):  # noqa  # pylint: disable=unidiomatic-typecheck
             return [f"{prefix} Type mismatch: {type(d1)} != {type(d2)}"]
 
         if isinstance(d1, str):
@@ -244,7 +244,7 @@ def compare_nested_objects(
                 # check if attributes are defined in the same way
                 d1_att = getattr(d1, att_name)
                 d2_att = getattr(d2, att_name)
-                if type(d1_att) != type(d2_att):  # pylint: disable=unidiomatic-typecheck
+                if type(d1_att) != type(d2_att):  # noqa  # pylint: disable=unidiomatic-typecheck
                     all_errors.append(
                         f"{prefix} Attribute {att_name} type mismatch: "
                         f"({type(d1_att)}) != ({type(d2_att)})"
@@ -265,7 +265,7 @@ def compare_nested_objects(
 
 
 def _compare_leaf(
-    d1: Any, d2: Any, depth: int, rtol=1.0e-5, atol=1.0e-8, equal_nan=False, prefix=""
+    d1: Any, d2: Any, _depth: int, rtol=1.0e-5, atol=1.0e-8, equal_nan=False, prefix=""
 ) -> List[str]:
     # at this point the 2 leaves are guaranteed to be the same type
     if isinstance(d1, np.ndarray):

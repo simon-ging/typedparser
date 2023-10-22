@@ -67,6 +67,7 @@ disable = [
     'attribute-defined-outside-init', 'consider-using-with', 'global-statement',
     'import-outside-toplevel', 'super-init-not-called', 'broad-exception-caught',
     'disallowed-name', 'redefined-outer-name', 'use-implicit-booleaness-not-comparison-to-zero',
+    'eval-used',
 ]
 
 [tool.pylint.format]
