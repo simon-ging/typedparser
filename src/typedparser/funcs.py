@@ -17,10 +17,12 @@ def add_typed_args(parser: argparse.ArgumentParser, typed_args_class) -> None:
         typed_args_class: a class decorated with @attrs.define where the arguments are stored
             as fields with typedparser.add_argument().
     """
-    assert isinstance(parser, argparse.ArgumentParser), (
-        f"'{parser}' is not an argparse.ArgumentParser")
-    assert has(typed_args_class), (
-        f"'{typed_args_class}' is not an attrs class. Decorate with @typedargs")
+    assert isinstance(
+        parser, argparse.ArgumentParser
+    ), f"'{parser}' is not an argparse.ArgumentParser"
+    assert has(
+        typed_args_class
+    ), f"'{typed_args_class}' is not an attrs class. Decorate with @typedargs"
 
     defargs = fields_dict(typed_args_class)
     all_names = list(defargs.keys())
@@ -33,7 +35,8 @@ def add_typed_args(parser: argparse.ArgumentParser, typed_args_class) -> None:
     assert len(unused_annotations) == 0, (
         f"Found annotations which were not parsed as attrs field. "
         f"Missing decorating @attr.define when defining the arguments? Annotations received: "
-        f"{unused_annotations}")
+        f"{unused_annotations}"
+    )
 
     for field_name, att in defargs.items():
         field_metadata = dict(att.metadata)
@@ -55,16 +58,19 @@ def add_typed_args(parser: argparse.ArgumentParser, typed_args_class) -> None:
             raise TypeError(
                 f"Error adding argument {field_name} to parser, maybe passed keyword argument "
                 f"that is incompatible with parser.add_arguments(). "
-                f"Original error was {type(e).__name__}: {e}") from e
+                f"Original error was {type(e).__name__}: {e}"
+            ) from e
         except argparse.ArgumentError as e:
             raise ValueError(
                 f"In case of conflicting option strings, make sure to not create a TypedParser "
                 f"twice with the same argparser ArgumentParser. "
-                f"Original error was {type(e).__name__}: {e}") from e
+                f"Original error was {type(e).__name__}: {e}"
+            ) from e
 
 
-def parse_typed_args(args: argparse.Namespace, typed_args_class, strict: bool = True
-                     ) -> AttrsInstance:
+def parse_typed_args(
+    args: argparse.Namespace, typed_args_class, strict: bool = True
+) -> AttrsInstance:
     """
     Given output arguments of argparse, create a typed instance of the args class.
 
@@ -85,8 +91,10 @@ def parse_typed_args(args: argparse.Namespace, typed_args_class, strict: bool = 
     # in strict mode, argparse output and defined arguments class must match
     if len(missing_args) > 0:
         args_desc = {k: args_dict[k] for k in sorted(missing_args)}
-        missing_err = (f"Argument(s) {args_desc} missing from configuration "
-                       f"'{typed_args_class.__name__}' with keys {fields_keys}.")
+        missing_err = (
+            f"Argument(s) {args_desc} missing from configuration "
+            f"'{typed_args_class.__name__}' with keys {fields_keys}."
+        )
         if strict:
             raise KeyError(missing_err)
 
@@ -105,7 +113,8 @@ def parse_typed_args(args: argparse.Namespace, typed_args_class, strict: bool = 
             raise AttributeError(
                 f"Arguments are missing from configuration and cannot be added. "
                 f"Either add it to the configuration or decorate with @attrs.define(slots=False) "
-                f"to allow adding unknown fields. Missing: {missing_err}") from e  # noqa
+                f"to allow adding unknown fields. Missing: {missing_err}"
+            ) from e  # noqa
     return out_args
 
 
@@ -127,4 +136,5 @@ def check_args_for_pytest(args: AttrsInstance, gt_dict: Dict[str, Any]) -> None:
         atts_value = getattr(args, key)
         assert atts_value == ref_value, (
             f"Attribute {key} has value {atts_value} ({type(atts_value).__name__}) "
-            f"but should be {ref_value} ({type(ref_value).__name__})")
+            f"but should be {ref_value} ({type(ref_value).__name__})"
+        )

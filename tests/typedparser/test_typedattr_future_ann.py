@@ -1,3 +1,8 @@
+"""
+Same as test_typedattr.py except added future annotations import.
+"""
+from __future__ import annotations
+
 from collections import defaultdict
 from copy import deepcopy
 from typing import (

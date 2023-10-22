@@ -76,8 +76,11 @@ class StrictRecursor(RecursorInterface):
 
 
 def modify_nested_object(
-        d: Any, modifier_fn: Callable, return_copy: bool = False,
-        parser_class: Type[RecursorInterface] = StrictRecursor) -> Any:
+    d: Any,
+    modifier_fn: Callable,
+    return_copy: bool = False,
+    parser_class: Type[RecursorInterface] = StrictRecursor,
+) -> Any:
     """
     Traverse a python object and apply a modifier function to all leaves.
 
@@ -114,8 +117,12 @@ def modify_nested_object(
     return _modify_nested_object(d)
 
 
-def flatten_dict(d: Any, separator_for_dict='/', separator_for_list='#',
-                 parser_class: Type[RecursorInterface] = StrictRecursor):
+def flatten_dict(
+    d: Any,
+    separator_for_dict="/",
+    separator_for_list="#",
+    parser_class: Type[RecursorInterface] = StrictRecursor,
+):
     """
     Flatten a nested dict by joining nested keys with a separator.
 
@@ -138,7 +145,8 @@ def flatten_dict(d: Any, separator_for_dict='/', separator_for_list='#',
     def _check_key(key_inner):
         assert separator_for_dict not in key_inner and separator_for_list not in key_inner, (
             f"Separators '{separator_for_dict}' and '{separator_for_list}' not allowed in key "
-            f"'{key_inner}' when flattening dict.")
+            f"'{key_inner}' when flattening dict."
+        )
 
     def _flatten_leaf(d_inner, prefix):
         items_inner = []
@@ -146,12 +154,14 @@ def flatten_dict(d: Any, separator_for_dict='/', separator_for_list='#',
             for k_inner, v_inner in d_inner.items():
                 k_inner_str = str(k_inner)
                 _check_key(k_inner_str)
-                items_inner.extend(_flatten_leaf(
-                    v_inner, prefix=f"{prefix}{separator_for_dict}{k_inner_str}"))
+                items_inner.extend(
+                    _flatten_leaf(v_inner, prefix=f"{prefix}{separator_for_dict}{k_inner_str}")
+                )
         elif parser.is_iterable_fn(d_inner):
             for i, v_inner in enumerate(d_inner):
-                items_inner.extend(_flatten_leaf(
-                    v_inner, prefix=f"{prefix}{separator_for_list}{i}"))
+                items_inner.extend(
+                    _flatten_leaf(v_inner, prefix=f"{prefix}{separator_for_list}{i}")
+                )
         else:
             items_inner.append((prefix, d_inner))
         return items_inner
@@ -163,9 +173,12 @@ def flatten_dict(d: Any, separator_for_dict='/', separator_for_list='#',
 
 
 def compare_nested_objects(
-        d1_outer: Any, d2_outer: Any,
-        recursor_class: Type[RecursorInterface] = StrictRecursor,
-        rtol=1.e-5, atol=1.e-8, equal_nan=False
+    d1_outer: Any,
+    d2_outer: Any,
+    recursor_class: Type[RecursorInterface] = StrictRecursor,
+    rtol=1.0e-5,
+    atol=1.0e-8,
+    equal_nan=False,
 ) -> List[str]:
     """
     Compare two nested objects (e.g. dicts) and return a list of str describing all differences.
@@ -184,33 +197,38 @@ def compare_nested_objects(
     """
     recursor = recursor_class()
 
-    def _compare_nested_objects(d1, d2, depth: int = 0):
+    def _compare_nested_objects(d1, d2, depth: int = 0, prefix=""):
+        # prefix = {' ' * depth}
         if type(d1) != type(d2):  # pylint: disable=unidiomatic-typecheck
-            return [f"{' ' * depth}Type mismatch: {type(d1)} != {type(d2)}"]
+            return [f"{prefix} Type mismatch: {type(d1)} != {type(d2)}"]
 
         if isinstance(d1, str):
             # leaf - guard against infinite iteration of strings
-            return _compare_leaf(d1, d2, depth)
+            return _compare_leaf(d1, d2, depth, prefix=prefix)
 
         if recursor.is_mapping_fn(d1):
             all_errors = []
             for k, v in d1.items():
                 if k not in d2:
-                    all_errors.append(f"{' ' * depth}Key {k} missing in second dict")
+                    all_errors.append(f"{prefix} Key {k} missing in second dict")
                     continue
-                all_errors.extend(_compare_nested_objects(v, d2[k], depth + 1))
+                all_errors.extend(
+                    _compare_nested_objects(v, d2[k], depth + 1, prefix=f"{prefix}.{k}")
+                )
             for k in d2.keys():
                 if k not in d1:
-                    all_errors.append(f"{' ' * depth}Key {k} missing in first dict")
+                    all_errors.append(f"{prefix} Key {k} missing in first dict")
             return all_errors
 
         if recursor.is_iterable_fn(d1):
             all_errors = []
             if len(d1) != len(d2):
-                all_errors.append(f"{' ' * depth}Length mismatch: {len(d1)} != {len(d2)}")
+                all_errors.append(f"{prefix} Length mismatch: {len(d1)} != {len(d2)}")
             else:
                 for i, v in enumerate(d1):
-                    all_errors.extend(_compare_nested_objects(v, d2[i], depth + 1))
+                    all_errors.extend(
+                        _compare_nested_objects(v, d2[i], depth + 1, prefix=f"{prefix}[{i}]")
+                    )
             return all_errors
 
         if has(type(d1)):
@@ -219,7 +237,7 @@ def compare_nested_objects(
             atts1 = get_attr_names(type(d1))
             atts2 = get_attr_names(type(d2))
             if atts1 != atts2:
-                return [f"{' ' * depth}Attribute names mismatch: {atts1} != {atts2}"]
+                return [f"{prefix} Attribute names mismatch: {atts1} != {atts2}"]
 
             all_errors = []
             for att_name in atts1:
@@ -227,31 +245,41 @@ def compare_nested_objects(
                 d1_att = getattr(d1, att_name)
                 d2_att = getattr(d2, att_name)
                 if type(d1_att) != type(d2_att):  # pylint: disable=unidiomatic-typecheck
-                    all_errors.append(f"{' ' * depth}Attribute {att_name} type mismatch: "
-                                      f"({type(d1_att)}) != ({type(d2_att)})")
+                    all_errors.append(
+                        f"{prefix} Attribute {att_name} type mismatch: "
+                        f"({type(d1_att)}) != ({type(d2_att)})"
+                    )
                 else:
-                    all_errors.extend(_compare_nested_objects(d1_att, d2_att, depth + 1))
+                    all_errors.extend(
+                        _compare_nested_objects(
+                            d1_att, d2_att, depth + 1, prefix=f"{prefix}.{att_name}"
+                        )
+                    )
             return all_errors
 
-        return _compare_leaf(d1, d2, depth, rtol=rtol, atol=atol, equal_nan=equal_nan)
+        return _compare_leaf(
+            d1, d2, depth, rtol=rtol, atol=atol, equal_nan=equal_nan, prefix=prefix
+        )
 
     return _compare_nested_objects(d1_outer, d2_outer)
 
 
-def _compare_leaf(d1: Any, d2: Any, depth: int, rtol=1.e-5, atol=1.e-8, equal_nan=False
-                  ) -> List[str]:
+def _compare_leaf(
+    d1: Any, d2: Any, depth: int, rtol=1.0e-5, atol=1.0e-8, equal_nan=False, prefix=""
+) -> List[str]:
     # at this point the 2 leaves are guaranteed to be the same type
     if isinstance(d1, np.ndarray):
         comp = np.allclose(d1, d2, rtol=rtol, atol=atol, equal_nan=equal_nan)
     else:
         comp = d1 == d2
     if not comp:
-        return [f"{' ' * depth}{d1} != {d2}"]
+        return [f"{prefix} {d1} != {d2}"]
     return []
 
 
 def check_object_equality(
-        d1: Any, d2: Any, recursor_class: Type[RecursorInterface] = StrictRecursor) -> bool:
+    d1: Any, d2: Any, recursor_class: Type[RecursorInterface] = StrictRecursor
+) -> bool:
     """
     Compare two nested objects (e.g. dicts) and return equality as boolean.
 

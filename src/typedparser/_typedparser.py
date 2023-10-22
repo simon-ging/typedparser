@@ -1,6 +1,8 @@
+# from __future__ import annotations  # do not use here, it breaks everything
+
 import argparse
 from dataclasses import dataclass
-from typing import Optional, Any, Type
+from typing import Optional, Type, Any
 
 from attr import field, define
 
@@ -20,16 +22,22 @@ class TypedParser:
 
     @classmethod
     def create_parser(
-            cls, typed_args_class: AttrsClass, strict: bool = True,
-            description: Optional[str] = None,
-            formatter_class: Type = CustomArgparseFmt, **kwargs):
+        cls,
+        typed_args_class: AttrsClass,
+        strict: bool = True,
+        description: Optional[str] = None,
+        formatter_class: Type = CustomArgparseFmt,
+        **kwargs,
+    ):
         parser = argparse.ArgumentParser(
-            description=description, formatter_class=formatter_class, **kwargs)
+            description=description, formatter_class=formatter_class, **kwargs
+        )
         return cls(parser, typed_args_class, strict=strict)
 
     @classmethod
-    def from_parser(cls, parser: argparse.ArgumentParser, typed_args_class: Any,
-                    strict: bool = False):
+    def from_parser(
+        cls, parser: argparse.ArgumentParser, typed_args_class: Any, strict: bool = False
+    ):
         return cls(parser, typed_args_class, strict=strict)
 
     def parse_args(self, args=None, namespace=None):
@@ -62,10 +70,8 @@ def add_argument(*name_or_flags: str, shortcut: Optional[str] = None, **kwargs):
     """
     assert "name_or_flags" not in kwargs, "Pass name_or_flags as positional arguments"
     if shortcut is not None:
-        assert shortcut.startswith("-"), (
-            f"Shortcut {shortcut} must start with '-'")
-        assert not shortcut.startswith("--"), (
-            f"Shortcut {shortcut} must not start with '--'")
+        assert shortcut.startswith("-"), f"Shortcut {shortcut} must start with '-'"
+        assert not shortcut.startswith("--"), f"Shortcut {shortcut} must not start with '--'"
     # determine the default value
     default = kwargs.get("default")
     action = kwargs.get("action")
@@ -79,8 +85,11 @@ def add_argument(*name_or_flags: str, shortcut: Optional[str] = None, **kwargs):
                 default = kwargs.get("const")
             # other actions are assumed to have default None output in argparse
 
-    return field(metadata={"name_or_flags": name_or_flags, "shortcut": shortcut, **kwargs},
-                 kw_only=True, default=default)
+    return field(
+        metadata={"name_or_flags": name_or_flags, "shortcut": shortcut, **kwargs},
+        kw_only=True,
+        default=default,
+    )
 
 
 @define

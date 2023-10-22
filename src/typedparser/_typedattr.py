@@ -1,5 +1,4 @@
 import collections
-from abc import abstractmethod
 from functools import partial
 from inspect import isclass
 from pathlib import Path
@@ -15,7 +14,8 @@ from typing import (
     Any,
     List,
     Optional,
-    overload,
+    get_type_hints,
+    Callable,
 )
 
 import attrs
@@ -64,6 +64,17 @@ def definenumpy(maybe_cls: Union[bool, Type] = False, **kwargs):
 
 
 class NamedTupleMixin:
+    """
+    Make an attrs class behave more like a named tuple.
+
+    Example:
+
+    @define
+    class FileProperties(NamedTupleMixin):
+        size: int
+        mtime: float
+    """
+
     def __iter__(self):
         return (getattr(self, att.name) for att in fields(type(self)))
 
@@ -100,20 +111,15 @@ def attrs_from_dict(
         Instance of cls with values from input_dict_or_attrs_inst
     """
     recursor = recursor_class()
-    try:
-        return _attrs_from_dict(
-            recursor,
-            cls,
-            input_dict_or_attrs_inst,
-            strict=strict,
-            skip_unknowns=skip_unknowns,
-            conversions=conversions,
-        )
-    except TypeError as e:
-        raise TypeError(
-            f"Error parsing {cls} from {input_dict_or_attrs_inst}, see the original "
-            f"error above."
-        ) from e
+    return _attrs_from_dict(
+        recursor,
+        cls,
+        input_dict_or_attrs_inst,
+        strict=strict,
+        skip_unknowns=skip_unknowns,
+        conversions=conversions,
+        more_error_info=f"Parsing class {cls} from input {input_dict_or_attrs_inst}",
+    )
 
 
 def _attrs_from_dict(
@@ -123,15 +129,13 @@ def _attrs_from_dict(
     strict: bool = False,
     skip_unknowns: bool = False,
     conversions: Optional[conversion_type] = None,
+    more_error_info: str = "",
 ):
     _print_fn(f"Parsing {cls} from {input_dict_or_attrs}")
     input_cls = type(input_dict_or_attrs)
     if has(input_cls):
         # if given an attrs instance, convert it to dict and then
         # parse it for conversions and typechecking
-        assert (
-            input_cls == cls
-        ), f"Mismatch: Trying to parse input of type {input_cls} as type {cls}"
         input_fields_dict = fields_dict(type(input_dict_or_attrs))
         input_dict: Dict[str, Any] = {k: getattr(input_dict_or_attrs, k) for k in input_fields_dict}
         return _attrs_from_dict(
@@ -141,6 +145,7 @@ def _attrs_from_dict(
             strict=strict,
             skip_unknowns=skip_unknowns,
             conversions=conversions,
+            more_error_info=more_error_info,
         )
 
     input_dict: Dict[str, Any] = input_dict_or_attrs
@@ -180,10 +185,14 @@ def _attrs_from_dict(
     attrs_inst = attrs.evolve(cls(*in_args), **in_kwargs)  # noqa
 
     # typecheck and unfold nested values in the attrs instance
+    type_hints = get_type_hints(cls)
     for att in all_atts:
         name = att.name
         value = getattr(attrs_inst, name)
         typ = att.type
+        if isinstance(typ, str):
+            typ = type_hints[name]
+
         new_value = _parse_nested(
             recursor,
             name,
@@ -192,6 +201,7 @@ def _attrs_from_dict(
             strict=strict,
             skip_unknowns=skip_unknowns,
             conversions=conversions,
+            more_error_info=more_error_info,
         )
         setattr(attrs_inst, name, new_value)
 
@@ -228,9 +238,25 @@ def _parse_nested(
     skip_unknowns: bool = False,
     conversions: conversion_type = None,
     depth: int = 0,
+    more_error_info: str = "",
 ):
     conversions = default_conversions if conversions is None else conversions
-    parse_recursive = partial(_parse_nested, recursor, depth=depth + 1, skip_unknowns=skip_unknowns)
+    parse_recursive = partial(
+        _parse_nested,
+        recursor,
+        depth=depth + 1,
+        skip_unknowns=skip_unknowns,
+        more_error_info=more_error_info,
+    )
+
+    if isinstance(typ, str):
+        print(f"Resolving {typ}")
+        try:
+            typ = get_type_hints(typ, globalns=globals())
+            print(f"Resolved via get_type_hints: {typ}")
+        except TypeError:
+            typ = eval(typ)
+            print(f"Resolved via eval: {typ}")
 
     origin = get_origin(typ)
     args = get_args(typ)

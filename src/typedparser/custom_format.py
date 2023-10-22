@@ -19,13 +19,17 @@ class CustomArgparseFmt(argparse.RawDescriptionHelpFormatter):
         # default setting for width
         if width is None:
             import shutil
+
             width = shutil.get_terminal_size().columns
             width -= 2
         if max_help_position is None:
             max_help_position = min(width // 2, 36)
         super().__init__(
-            prog, indent_increment=indent_increment, max_help_position=max_help_position,
-            width=width)
+            prog,
+            indent_increment=indent_increment,
+            max_help_position=max_help_position,
+            width=width,
+        )
 
     def _format_action(self, action):
         # source: argparse.MetavarTypeHelpFormatter
@@ -37,14 +41,14 @@ class CustomArgparseFmt(argparse.RawDescriptionHelpFormatter):
     def _get_help_string(self, action):
         # Support argparse.SUPPRESS as input for help
         if action.help == argparse.SUPPRESS:
-            help_str_add = 'default: %(default)s'
+            help_str_add = "default: %(default)s"
             help_str = ""
         else:
-            help_str_add = ' (default: %(default)s)'
+            help_str_add = " (default: %(default)s)"
             help_str = action.help
         if action.choices is not None:
             help_str_add = f"{help_str_add} choices: %(choices)s"
-        if '%(default)' not in action.help:
+        if "%(default)" not in action.help:
             if action.default is not argparse.SUPPRESS:
                 defaulting_nargs = [argparse.OPTIONAL, argparse.ZERO_OR_MORE]
                 if action.option_strings or action.nargs in defaulting_nargs:
