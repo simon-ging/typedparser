@@ -82,10 +82,13 @@ if __name__ == "__main__":
 
 * Use `TypedParser.from_parser(parser, Args)` to add typing to an existing parser. This is useful
 to cover usecases like subparsers or argument groups.
+* Snippet for argument lists `xarg: List[int] = add_argument(shortcut="-x", type=int, action="append", help="Xarg", default=[])`,
+use as `-x 1 -x 2` to get `[1, 2]` in the args instance.
 
 ## Usage of attr utilities
 
-Define the class hierarchy and parse the input using `attrs_from_dict`:
+Define the class hierarchy and parse the input using `attrs_from_dict`.
+Use `@define(slots=False)` to allow multiple inheritance and setting attributes later.
 
 ~~~python
 from attrs import define

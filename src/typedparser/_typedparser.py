@@ -92,7 +92,7 @@ def add_argument(*name_or_flags: str, shortcut: Optional[str] = None, **kwargs):
     )
 
 
-@define
+@define(slots=False)  # slots false to allow multi inheritance
 class VerboseQuietArgs:
     verbose: bool = add_argument(shortcut="-v", help="Increase verbosity", action="store_true")
     quiet: bool = add_argument(shortcut="-q", help="Reduce verbosity", action="store_true")
