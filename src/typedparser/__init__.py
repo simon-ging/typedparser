@@ -14,4 +14,4 @@ __all__ = [
     "CustomArgparseFmt",
     "get_attr_names",
 ]
-__version__ = "0.5.2"
+__version__ = "0.5.3"
