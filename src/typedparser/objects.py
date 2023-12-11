@@ -312,3 +312,23 @@ def big_obj_to_short_str(d: Any) -> str:
         return f"{class_name} len {len(d)}"
     except TypeError:
         return f"Object of type {class_name}"
+
+
+def invert_dictionary(inv_dict: dict[str, dict[str, any]]) -> dict[str, dict[str, any]]:
+    """
+    Invert a dictionary of dictionaries. Useful for creating dataframes.
+
+    Args:
+        inv_dict: dictionary of {key1: {field1: value1, field2: value2, ...}, ...}
+
+    Returns:
+        Dictionary of {field1: {key1: value1, key2: value2, ...}, ...}
+
+    """
+    regular_dict = {}
+    for key, value_dict in inv_dict.items():
+        for field, value in value_dict.items():
+            if field not in regular_dict:
+                regular_dict[field] = {}
+            regular_dict[field][key] = value
+    return regular_dict
