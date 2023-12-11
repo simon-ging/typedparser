@@ -1,6 +1,8 @@
 """
 Generic utilities for python objects
 """
+from __future__ import annotations
+
 from abc import ABCMeta, abstractmethod
 from collections.abc import Mapping, Iterable
 from copy import deepcopy
