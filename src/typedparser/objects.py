@@ -316,21 +316,41 @@ def big_obj_to_short_str(d: Any) -> str:
         return f"Object of type {class_name}"
 
 
-def invert_dictionary(inv_dict: dict[str, dict[str, any]]) -> dict[str, dict[str, any]]:
+def invert_dict_of_dict(dict_of_dict: dict[str, dict[str, any]]) -> dict[str, dict[str, any]]:
     """
     Invert a dictionary of dictionaries. Useful for creating dataframes.
 
     Args:
-        inv_dict: dictionary of {key1: {field1: value1, field2: value2, ...}, ...}
+        dict_of_dict: dictionary of {key1: {field1: value1, field2: value2, ...}, ...}
 
     Returns:
         Dictionary of {field1: {key1: value1, key2: value2, ...}, ...}
 
     """
     regular_dict = {}
-    for key, value_dict in inv_dict.items():
+    for key, value_dict in dict_of_dict.items():
         for field, value in value_dict.items():
             if field not in regular_dict:
                 regular_dict[field] = {}
             regular_dict[field][key] = value
     return regular_dict
+
+
+def invert_list_of_dict(list_of_dict: list[dict[str, any]]) -> dict[str, list[any]]:
+    """
+    Invert a list of dictionaries. Useful for creating dataframes.
+
+    Args:
+        list_of_dict: list of {field1: value1, field2: value2, ...}
+
+    Returns:
+        Dictionary of {field1: [value1, value2, ...], ...}
+
+    """
+    dict_of_list = {}
+    for value_dict in list_of_dict:
+        for field, value in value_dict.items():
+            if field not in dict_of_list:
+                dict_of_list[field] = []
+            dict_of_list[field].append(value)
+    return dict_of_list
