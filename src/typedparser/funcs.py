@@ -47,11 +47,36 @@ def add_typed_args(parser: argparse.ArgumentParser, typed_args_class) -> None:
             continue
 
         shortcut = field_metadata.pop("shortcut", None)
+        if shortcut is not None and len(name_or_flags) > 0:
+            raise ValueError(
+                f"Argument '{field_name}' invalid. With shortcut='{shortcut}' "
+                f"the argument name will be inferred from the field name and therefore the "
+                f"positional arguments must be empty, but got {name_or_flags}."
+            )
+
+        positional = field_metadata.pop("positional", False)
+        if positional and len(name_or_flags) > 0:
+            raise ValueError(
+                f"Argument '{field_name}' invalid. With positional='{positional} "
+                f"the argument name will be inferred from the field name and therefore the "
+                f"positional arguments must be empty, but got {name_or_flags}."
+            )
+
+        if shortcut is not None and positional:
+            raise ValueError(
+                f"Argument '{field_name}' invalid. Cannot use positional and shortcut at the same "
+                f"time but got positional='{positional}' and shortcut='{shortcut}'."
+            )
+
         if len(name_or_flags) == 0:
             name_or_flags = []
-            if shortcut is not None:
-                name_or_flags.append(shortcut)
-            name_or_flags.append(f"--{field_name}")
+            if positional:
+                name_or_flags.append(field_name)
+            else:
+                if shortcut is not None:
+                    name_or_flags.append(shortcut)
+                name_or_flags.append(f"--{field_name}")
+
         try:
             parser.add_argument(*name_or_flags, **field_metadata)
         except TypeError as e:
@@ -113,7 +138,7 @@ def parse_typed_args(
             raise AttributeError(
                 f"Arguments are missing from configuration and cannot be added. "
                 f"Either add it to the configuration or decorate with @attrs.define(slots=False) "
-                f"to allow adding unknown fields. Missing: {missing_err}"
+                f"to allow adding unknown fields. Missing: {missing_args}"
             ) from e  # noqa
     return out_args
 

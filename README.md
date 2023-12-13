@@ -17,10 +17,56 @@ Typing extension for python argparse using [attrs](https://www.attrs.org/en/stab
 
 Includes typechecking and conversion utilities to parse a dictionary into an attrs instance. 
 
+## Install
+
+Requires `python>=3.7`
+
+```bash
+pip install typedparser
+```
+
+## Basic usage
+
+1. Create an attrs class (decorate with `@attr.define`). Note that optional arguments must also be typed as optional.
+2. Define and type the fields with `typedparser.add_argument` - the syntax extends [add_argument from argparse](https://docs.python.org/3/library/argparse.html#the-add-argument-method).
+3. Parse the args with `TypedParser` and enjoy args with type hints. Disable typechecking by setting `strict=False`.
+
+~~~python
+from typing import Optional
+from attrs import define
+from typedparser import add_argument, TypedParser
+
+
+@define
+class Args:   
+    # omit the argument name to have it inferred from the field name
+    foo: str = add_argument(positional=True)
+    bar: int = add_argument(shortcut="-b", type=int, default=0)
+    opt: Optional[str] = add_argument()
+
+    # # in case you prefer the regular argparse syntax:
+    # foo: str = add_argument("foo")
+    # bar: int = add_argument("-b", "--bar", type=int, default=0)
+    # opt: Optional[str] = add_argument("--opt")
+    
+    
+
+def main():
+    parser = TypedParser.create_parser(Args, strict=True)
+    args: Args = parser.parse_args()
+    print(args)
+
+
+if __name__ == "__main__":
+    main()
+
+~~~
+
+
 ## Features
 
 * Create commandline arguments with type hints and checks while
-staying very close to the syntax of the standard library's argparse.
+staying close to the syntax of the standard library's argparse.
 * Utilities for typechecking and converting nested objects:
   * Nested checking and conversion of python standard types
   * Supports old and new style typing (e.g. `typing.List` and `list`)
@@ -33,59 +79,14 @@ staying very close to the syntax of the standard library's argparse.
   * `@definenumpy` decorator for equality check if the instances contains numpy arrays
 * Some object utilities in `typedparser.objects` required for everything else
 
-## Install
-
-Requires `python>=3.7`
-
-```bash
-pip install typedparser
-```
-
-## Usage of the parser
-
-1. Create an attrs class (decorate with `@attr.define`)
-2. Define the fields with `typedparser.add_argument` - the syntax extends [add_argument from argparse](https://docs.python.org/3/library/argparse.html#the-add-argument-method).
-3. Parse the args with `TypedParser`, now the args are typechecked and there are typehints available.  
-
-~~~python
-from typing import Optional
-from attrs import define
-from typedparser import add_argument, TypedParser
-
-
-@define
-class Args:
-    foo: int = add_argument("foo", type=int)
-    bar: int = add_argument("-b", "--bar", type=int, default=0)
-    
-    # Syntax extensions:
-    
-    # Omit argument name to create an optional argument --opt
-    opt: Optional[int] = add_argument(type=int)
-    
-    # Use shortcut to create an optional argument -s / --short 
-    short: Optional[int] = add_argument(shortcut="-s", type=int)
-
-
-def main():
-    parser = TypedParser.create_parser(Args)
-    args: Args = parser.parse_args()
-    print(args)
-
-
-if __name__ == "__main__":
-    main()
-
-~~~
-
-### Advanced usage
+## Advanced usage
 
 * Use `TypedParser.from_parser(parser, Args)` to add typing to an existing parser. This is useful
 to cover usecases like subparsers or argument groups.
 * Snippet for argument lists `xarg: List[int] = add_argument(shortcut="-x", type=int, action="append", help="Xarg", default=[])`,
 use as `-x 1 -x 2` to get `[1, 2]` in the args instance.
 
-## Usage of attr utilities
+### Usage of attr utilities
 
 Define the class hierarchy and parse the input using `attrs_from_dict`.
 Use `@define(slots=False)` to allow multiple inheritance and setting attributes later.

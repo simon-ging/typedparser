@@ -10,7 +10,6 @@ from ._typedattr import AttrsClass
 from .custom_format import CustomArgparseFmt
 from .funcs import parse_typed_args, add_typed_args
 
-
 @dataclass
 class TypedParser:
     parser: argparse.ArgumentParser
@@ -55,7 +54,9 @@ class TypedParser:
         return typed_args
 
 
-def add_argument(*name_or_flags: str, shortcut: Optional[str] = None, **kwargs):
+def add_argument(
+    *name_or_flags: str, shortcut: Optional[str] = None, positional: bool = False, **kwargs
+):
     """
     Interface matches ArgumentParser.add_argument:
     https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_argument
@@ -66,6 +67,7 @@ def add_argument(*name_or_flags: str, shortcut: Optional[str] = None, **kwargs):
         shortcut: Shortcut for the argument including leading single dash.
             If given, will be added as a shortcut to the argument.
             Cannot be used if name_or_flags are given.
+        positional: If True, will be added as a positional argument.
         **kwargs: will be passed to argparse parser.add_argument
     """
     assert "name_or_flags" not in kwargs, "Pass name_or_flags as positional arguments"
@@ -86,7 +88,12 @@ def add_argument(*name_or_flags: str, shortcut: Optional[str] = None, **kwargs):
             # other actions are assumed to have default None output in argparse
 
     return field(
-        metadata={"name_or_flags": name_or_flags, "shortcut": shortcut, **kwargs},
+        metadata={
+            "name_or_flags": name_or_flags,
+            "shortcut": shortcut,
+            "positional": positional,
+            **kwargs,
+        },
         kw_only=True,
         default=default,
     )

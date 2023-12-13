@@ -81,9 +81,28 @@ def setup_partially_typed_args(request):
     strict, expected_error = request.param
     inputs = []
     outputs = {
-        "opt_str_arg": None,
+        "untyped_arg": None,
+        "typed_arg": None,
     }
     yield arg_config4, inputs, outputs, strict, expected_error
+
+
+@define
+class arg_config_pos:
+    str_arg: str = add_argument(type=str, positional=True)
+
+
+@pytest.fixture(scope="module")
+def setup_positional_args(request):
+    strict, expected_error = False, None
+    inputs = ["some_other_value"]
+    outputs = {
+        "str_arg": "some_other_value",
+    }
+    yield arg_config_pos, inputs, outputs, strict, expected_error
+
+
+# todo test shortcut and positionla wrong usage
 
 
 @pytest.mark.parametrize(
@@ -92,6 +111,8 @@ def setup_partially_typed_args(request):
         lazy_fixture("setup_correct_args"),
         lazy_fixture("setup_incorrect_args"),
         lazy_fixture("setup_untyped_args"),
+        lazy_fixture("setup_partially_typed_args"),
+        lazy_fixture("setup_positional_args"),
     ],
 )
 def test_typedparser(setup_all_args):
@@ -110,6 +131,7 @@ def test_typedparser(setup_all_args):
     args: config_class = parser.parse_args(inputs)
     print(f"Output args: {args}")
     check_args_for_pytest(args, outputs)
+
 
 
 def get_typecheck_args():
