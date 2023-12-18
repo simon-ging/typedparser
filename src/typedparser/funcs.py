@@ -117,8 +117,11 @@ def parse_typed_args(
     if len(missing_args) > 0:
         args_desc = {k: args_dict[k] for k in sorted(missing_args)}
         missing_err = (
-            f"Argument(s) {args_desc} missing from configuration "
-            f"'{typed_args_class.__name__}' with keys {fields_keys}."
+            f"Arguments received from argparse {args_desc} "
+            f"are missing from argument definition '{typed_args_class.__name__}'. "
+            f"This probably means there is a mismatch between the call to add_argument() "
+            f"and the attribute name."
+            # f" Available keys in '{typed_args_class.__name__}': {fields_keys}."
         )
         if strict:
             raise KeyError(missing_err)

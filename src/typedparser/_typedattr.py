@@ -265,8 +265,8 @@ def _parse_nested(
     value_type_name = value_type.__name__ if hasattr(value_type, "__name__") else str(value_type)
     err_msg = (
         f"Could not parse {name}={value} (type {value_type_name}) as type "
-        f"{target_type_name} with strict={strict} "
-        # f"depth={depth} type annotation origin={origin} args={args}"
+        f"{target_type_name} with strict={strict}"
+        # f" depth={depth} type annotation origin={origin} args={args}"
     )
 
     def maybe_raise_typeerorr(full_err_msg):
@@ -393,7 +393,11 @@ def _parse_nested(
     if strict:
         add_info = ""
         if typ is None:
-            add_info = "Untyped fields not allowed in strict mode. "
+            add_info = (
+                "Untyped fields not allowed in strict mode. "
+                "Add type annotations or set strict=False. "
+            )
+
         raise TypeError(f"{add_info}{err_msg}. Wrong type or type not supported.")
     _print_fn(f"{err_msg}. Returning value {value} as-is")
     return value
