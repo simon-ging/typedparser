@@ -133,7 +133,6 @@ def test_typedparser(setup_all_args):
     check_args_for_pytest(args, outputs)
 
 
-
 def get_typecheck_args():
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group()

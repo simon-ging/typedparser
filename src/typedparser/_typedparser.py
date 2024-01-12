@@ -10,6 +10,7 @@ from ._typedattr import AttrsClass
 from .custom_format import CustomArgparseFmt
 from .funcs import parse_typed_args, add_typed_args
 
+
 @dataclass
 class TypedParser:
     parser: argparse.ArgumentParser
