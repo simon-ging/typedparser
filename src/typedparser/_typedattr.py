@@ -15,6 +15,7 @@ from typing import (
     List,
     Optional,
     get_type_hints,
+Callable,
 )
 
 import attrs
@@ -32,10 +33,13 @@ except ImportError:
 
 # default conversions allow to convert instead of raising errors in case of matching types
 # e.g. create Path given str, or create float given int
-conversion_type = List[Tuple[Tuple[Type, ...], Type]]
+# syntax: ((source_type1, source_type2, ...), target_type, conversion_function)
+# if conversion_function is none, use target_type as conversion function
+conversion_type = List[Tuple[Tuple[Type, ...], Type, Optional[Callable]]]
 default_conversions: conversion_type = [
-    ((str,), Path),
-    ((int,), float),
+    ((str,), Path, None),
+    ((int,), float, None),
+    ((Path,), str, Path.as_posix),
 ]
 
 
@@ -384,11 +388,13 @@ def _parse_nested(
         return maybe_raise_typeerorr(f"{err_msg}. Abstract collections are not supported.")
 
     # add explicit conversions
-    for convert_source, convert_target in conversions:
+    for convert_source, convert_target, convert_callable in conversions:
         if not isclass(typ):
             continue
         if issubclass(typ, convert_target) and isinstance(value, convert_source):
-            return convert_target(value)
+            if convert_callable is None:
+                convert_callable = convert_target
+            return convert_callable(value)
 
     if strict:
         add_info = ""
