@@ -15,4 +15,4 @@ __all__ = [
     "get_attr_names",
     "define",  # deprecated, use `from attr import define` directly instead
 ]
-__version__ = "0.9.1"
+__version__ = "0.9.2"
