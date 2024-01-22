@@ -1,13 +1,13 @@
 # typedparser
 
 <p align="center">
-<a href="https://github.com/gingsi/typedparser/actions/workflows/build-py37.yml">
-  <img alt="build 3.7 status" title="build 3.7 status" src="https://img.shields.io/github/actions/workflow/status/gingsi/typedparser/build-py37.yml?branch=main&label=build%203.7" />
+<a href="https://github.com/simonging/typedparser/actions/workflows/build-py37.yml">
+  <img alt="build 3.7 status" title="build 3.7 status" src="https://img.shields.io/github/actions/workflow/status/simonging/typedparser/build-py37.yml?branch=main&label=build%203.7" />
 </a>
-<a href="https://github.com/gingsi/typedparser/actions/workflows/build-py310.yml">
-  <img alt="build 3.10 status" title="build 3.10 status" src="https://img.shields.io/github/actions/workflow/status/gingsi/typedparser/build-py310.yml?branch=main&label=build%203.10" />
+<a href="https://github.com/simonging/typedparser/actions/workflows/build-py310.yml">
+  <img alt="build 3.10 status" title="build 3.10 status" src="https://img.shields.io/github/actions/workflow/status/simonging/typedparser/build-py310.yml?branch=main&label=build%203.10" />
 </a>
-<img alt="coverage" title="coverage" src="https://raw.githubusercontent.com/gingsi/typedparser/main/docs/coverage.svg" />
+<img alt="coverage" title="coverage" src="https://raw.githubusercontent.com/simonging/typedparser/main/docs/coverage.svg" />
 <a href="https://pypi.org/project/typedparser/">
   <img alt="version" title="version" src="https://img.shields.io/pypi/v/typedparser?color=success" />
 </a>

@@ -13,6 +13,6 @@ __all__ = [
     "VerboseQuietArgs",
     "CustomArgparseFmt",
     "get_attr_names",
-    "define",  # deprecated, use from attrs import define directly instead
+    "define",  # deprecated, use `from attr import define` directly instead
 ]
-__version__ = "0.8.4"
+__version__ = "0.9.1"
