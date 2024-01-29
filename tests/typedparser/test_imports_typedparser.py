@@ -1,7 +1,7 @@
 """
 This test will import all modules in typedparser and check that all imports are sane.
 
-Note: Do not want to depend on packg https://github.com/simon-ging/packg due to circular ref.
+Note: Do not want to depend on packg https://github.com/simonging/packg due to circular ref.
 Therefore copy pasted module packg.import_from_source here.
 """
 # begin copy paste

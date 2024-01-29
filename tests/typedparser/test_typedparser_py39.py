@@ -1,5 +1,7 @@
+"""
+Extend action is only available in Python 3.9+.
+"""
 # pylint: disable=unsubscriptable-object
-
 import sys
 from typing import Optional
 
