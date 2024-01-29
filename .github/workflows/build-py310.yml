@@ -22,7 +22,7 @@ jobs:
       W_ENV_NAME: buildenv
       W_REQ_CONDA: etc/environment-py310.yml
       W_REQ_PIP: requirements.txt
-      W_CACHE_NUMBER: 0  # increase to reset cache
+      W_CACHE_NUMBER: 1  # increase to reset cache
       SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2  # stuck cache download should stop after X minutes
       W_CACHE_KILL: 3  # hard kill a stuck cache download after X minutes
     steps:
