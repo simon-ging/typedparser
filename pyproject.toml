@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "typedparser"
 description = "Extension for python argparse with typehints and typechecks."
 readme = "README.md"
-authors = [{ "name" = "simonging" }]
+authors = [{ "name" = "simon-ging" }]
 requires-python = ">=3.7"
 license = { text = "Apache-2.0" }
 keywords = ["attrs", "typing", "dict", "attr"]
@@ -24,7 +24,7 @@ classifiers = [
 dynamic = ["version", "dependencies"]
 
 [project.urls]
-Project-URL = "https://github.com/simonging/typedparser"
+Project-URL = "https://github.com/simon-ging/typedparser"
 
 [tool.setuptools]
 zip-safe = true
