@@ -1,4 +1,7 @@
+import attrs
 import collections
+from attr import has, AttrsInstance
+from attrs import define, fields_dict, fields, Attribute
 from functools import partial
 from inspect import isclass
 from pathlib import Path
@@ -15,12 +18,8 @@ from typing import (
     List,
     Optional,
     get_type_hints,
-Callable,
+    Callable,
 )
-
-import attrs
-from attr import has, AttrsInstance
-from attrs import define, fields_dict, fields, Attribute
 
 from .objects import check_object_equality, RecursorInterface, StrictRecursor, AttrsClass
 
@@ -133,7 +132,10 @@ def _attrs_from_dict(
     skip_unknowns: bool = False,
     conversions: Optional[conversion_type] = None,
     more_error_info: str = "",
+    current_position: list | None = None,
 ):
+    if current_position is None:
+        current_position = []
     _print_fn(f"Parsing {cls} from {input_dict_or_attrs}")
     input_cls = type(input_dict_or_attrs)
     if has(input_cls):
@@ -173,7 +175,7 @@ def _attrs_from_dict(
     for field_name, field_value in matching_input.items():
         field_att = cls_fields_dict[field_name]
         try:
-            is_positional = bool(field_att.default == attrs.NOTHING)
+            is_positional = bool(field_att.default == attrs.NOTHING) and not field_att.kw_only
         except ValueError:
             # some field defaults, e.g. numpy arrays do not have comparison defined here
             # but that means that the default is set and the field is not positional
@@ -185,7 +187,17 @@ def _attrs_from_dict(
 
     # create an attrs instance from the dict
     # the instance will be flat (nested dicts are not resolved yet) and not typechecked.
-    attrs_inst = attrs.evolve(cls(*in_args), **in_kwargs)  # noqa
+    try:
+        cls_inst = cls(*in_args, **in_kwargs)  # noqa
+        attrs_inst = cls_inst
+        # # not sure why evolve was used before
+        # attrs_inst = attrs.evolve(cls_inst, **in_kwargs)  # noqa
+    except TypeError as e:
+        raise TypeError(
+            f"Failed creating instance of {cls} from input {input_dict} "
+            f"with args {in_args} and kwargs {in_kwargs}. Error occurred at: "
+            f"{'.'.join(current_position)}. {e}\n\nError context: {more_error_info}."
+        ) from e
 
     # typecheck and unfold nested values in the attrs instance
     type_hints = get_type_hints(cls)
@@ -205,6 +217,7 @@ def _attrs_from_dict(
             skip_unknowns=skip_unknowns,
             conversions=conversions,
             more_error_info=more_error_info,
+            current_position=current_position + [name],
         )
         setattr(attrs_inst, name, new_value)
 
@@ -242,14 +255,17 @@ def _parse_nested(
     conversions: conversion_type = None,
     depth: int = 0,
     more_error_info: str = "",
+    current_position: list | None = None,
 ):
     conversions = default_conversions if conversions is None else conversions
     parse_recursive = partial(
         _parse_nested,
         recursor,
-        depth=depth + 1,
         skip_unknowns=skip_unknowns,
+        conversions=conversions,
+        depth=depth + 1,
         more_error_info=more_error_info,
+        current_position=current_position,
     )
 
     if isinstance(typ, str):
@@ -288,6 +304,8 @@ def _parse_nested(
             strict=strict,
             skip_unknowns=skip_unknowns,
             conversions=conversions,
+            more_error_info=more_error_info,
+            current_position=current_position,
         )
 
     # resolve any
