@@ -132,7 +132,7 @@ def _attrs_from_dict(
     skip_unknowns: bool = False,
     conversions: Optional[conversion_type] = None,
     more_error_info: str = "",
-    current_position: list | None = None,
+    current_position: Optional[List] = None,
 ):
     if current_position is None:
         current_position = []
@@ -255,7 +255,7 @@ def _parse_nested(
     conversions: conversion_type = None,
     depth: int = 0,
     more_error_info: str = "",
-    current_position: list | None = None,
+    current_position: Optional[List] = None,
 ):
     conversions = default_conversions if conversions is None else conversions
     parse_recursive = partial(
