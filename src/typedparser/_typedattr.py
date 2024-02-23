@@ -22,6 +22,7 @@ from typing import (
 )
 
 from .objects import check_object_equality, RecursorInterface, StrictRecursor, AttrsClass
+from types import  UnionType
 
 try:
     # python>=3.8
@@ -313,7 +314,7 @@ def _parse_nested(
         return value
 
     # resolve unions (mostly "optional")
-    if origin == Union:
+    if origin == Union or isinstance(typ, UnionType):
         for new_typ in args:
             try:
                 # force strict parsing and catch errors to try all different types
