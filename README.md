@@ -154,7 +154,7 @@ Note: Some tests are skipped for python 3.7.
 
 ~~~bash
 pip install -e .
-pip install pytest pytest-cov pylint pytest-lazy-fixture
+pip install pytest pytest-cov pylint
 pylint typedparser
 
 # run tests
