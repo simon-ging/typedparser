@@ -1,5 +1,5 @@
 """
-Duplicate of test_typedattr.py with added future annotations
+Duplicate of test_typedattr.py with added future annotations.
 """
 # pylint: disable=duplicate-code
 

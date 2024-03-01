@@ -1,17 +1,16 @@
 """
-Duplicate of test_typedattr_py39.py with added future annotations.
+Test the pipe operator for Optional[int] type definition. (new syntax from python 3.10)
+with added future annotations.
 """
-# pylint: disable=duplicate-code
-
+# pylint: disable=unsubscriptable-object
 from __future__ import annotations
 
-import sys
 from collections import defaultdict
-from collections.abc import Callable
-from typing import Optional
 
 import attrs
+import sys
 from attr import define
+from collections.abc import Callable
 
 from typedparser import attrs_from_dict
 
@@ -20,7 +19,7 @@ if sys.version_info >= (3, 9):
     @define
     class Cfg:
         f1: int = 12
-        f2: Optional[int] = None
+        f2: int | None = None
         f3: tuple[int, str] = [12, "a"]
         f4: tuple[int, ...] = [12, 13, -1]
         f5: list[int] = [12]
