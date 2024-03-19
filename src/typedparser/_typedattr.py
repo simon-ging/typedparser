@@ -294,7 +294,7 @@ def _parse_nested(
         # f" depth={depth} type annotation origin={origin} args={args}"
     )
 
-    def maybe_raise_typeerorr(full_err_msg):
+    def maybe_raise_typeerror(full_err_msg):
         if strict:
             raise TypeError(full_err_msg)
         _print_fn(f"Caught: {full_err_msg}. Returning as is.")
@@ -326,7 +326,7 @@ def _parse_nested(
             except TypeError:
                 pass
         # if we get here, none of the types worked
-        return maybe_raise_typeerorr(f"{err_msg}. No type in Union matches.")
+        return maybe_raise_typeerror(f"{err_msg}. No type in Union matches.")
 
     final_list_type = None
 
@@ -335,9 +335,9 @@ def _parse_nested(
         if not (len(args) == 2 and args[1] == Ellipsis):
             # resolve fixed tuple
             if not recursor.is_iterable_fn(value):
-                return maybe_raise_typeerorr(f"{err_msg}. Expect a sequence, got {type(value)}")
+                return maybe_raise_typeerror(f"{err_msg}. Expect a sequence, got {type(value)}")
             if len(value) != len(args):
-                return maybe_raise_typeerorr(
+                return maybe_raise_typeerror(
                     f"{err_msg}. Expect a sequence with length {len(args)}, got length {len(value)}"
                 )
             new_tuple = []
@@ -351,7 +351,7 @@ def _parse_nested(
     # check dict
     if origin in (dict, collections.defaultdict):
         if not recursor.is_mapping_fn(value):
-            return maybe_raise_typeerorr(f"{err_msg}. Expect a mapping, got {type(value)}")
+            return maybe_raise_typeerror(f"{err_msg}. Expect a mapping, got {type(value)}")
         if len(args) == 0:
             args = [Any, Any]
         dict_keytype, dict_valuetype = args
@@ -379,7 +379,7 @@ def _parse_nested(
     # resolve list
     if origin == list:
         if not recursor.is_iterable_fn(value):
-            return maybe_raise_typeerorr(f"{err_msg}. Expect iterable, got {type(value)}")
+            return maybe_raise_typeerror(f"{err_msg}. Expect iterable, got {type(value)}")
         list_arg_type = args[0]
         list_output = []
         for item in value:
@@ -408,7 +408,7 @@ def _parse_nested(
     except TypeError:
         is_sc = False
     if is_sc:
-        return maybe_raise_typeerorr(f"{err_msg}. Abstract collections are not supported.")
+        return maybe_raise_typeerror(f"{err_msg}. Abstract collections are not supported.")
 
     # add explicit conversions
     for convert_source, convert_target, convert_callable in conversions:
