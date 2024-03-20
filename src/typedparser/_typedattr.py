@@ -1,7 +1,4 @@
-import attrs
 import collections
-from attr import has, AttrsInstance
-from attrs import define, fields_dict, fields, Attribute
 from functools import partial
 from inspect import isclass
 from pathlib import Path
@@ -20,6 +17,10 @@ from typing import (
     get_type_hints,
     Callable,
 )
+
+import attrs
+from attr import has, AttrsInstance
+from attrs import define, fields_dict, fields, Attribute
 
 from .objects import check_object_equality, RecursorInterface, StrictRecursor, AttrsClass
 
@@ -319,14 +320,19 @@ def _parse_nested(
 
     # resolve unions (mostly "optional")
     if origin == Union or (UnionType is not None and isinstance(typ, UnionType)):
+        collected_errors = []
         for new_typ in args:
             try:
                 # force strict parsing and catch errors to try all different types
                 return parse_recursive(name, value, new_typ, strict=True)
-            except TypeError:
-                pass
+            except TypeError as e:
+                collected_errors.append(f"{e}")
         # if we get here, none of the types worked
-        return maybe_raise_typeerror(f"{err_msg}. No type in Union matches.")
+        collected_error_str = "\n".join(collected_errors)
+        return maybe_raise_typeerror(
+            f"No type in Union matches. Errors per type:\n{collected_error_str}\n"
+            f"Final error: {err_msg}"
+        )
 
     final_list_type = None
 
