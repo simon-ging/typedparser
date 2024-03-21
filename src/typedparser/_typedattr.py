@@ -229,7 +229,7 @@ def _attrs_from_dict(
 
     # handle unknown fields
     if len(nonmatching_input) > 0 and not skip_unknowns:
-        if strict:
+        if strict and not getattr(cls, "_allow_extra_keys", False):
             raise TypeError(
                 f"Keys in input {list(nonmatching_input.keys())} not defined "
                 f"for class {cls} with attributes {sorted(all_att_names)}"

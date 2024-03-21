@@ -123,6 +123,7 @@ print(attrs_from_dict(CfgNested, {"sub_cfg": {"foo": 1, "bar": 2}}))
   the output will be a tuple
 * Raise errors if types cannot be matched, there are unknown fields in the input or
   abstract annotation types are used (e.g. Sequence)
+* Set `_allow_extra_keys = True` in the class definition to allow unknown fields in the input
 
 ### Non-strict mode
 
