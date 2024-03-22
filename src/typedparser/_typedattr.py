@@ -315,7 +315,7 @@ def _parse_nested(
         )
 
     # resolve any
-    if typ == Any:
+    if typ in [Any, any]:
         return value
 
     # resolve unions (mostly "optional")
@@ -369,9 +369,9 @@ def _parse_nested(
             dict_output = {}
 
         for key, val in value.items():
-            dict_output[parse_recursive(name, key, dict_keytype, strict=strict)] = parse_recursive(
-                name, val, dict_valuetype, strict=strict
-            )
+            parsed_key = parse_recursive(f"{name}/dict_key_type", key, dict_keytype, strict=strict)
+            parsed_value = parse_recursive(f"{name}/{key}", val, dict_valuetype, strict=strict)
+            dict_output[parsed_key] = parsed_value
 
         return dict_output
 
