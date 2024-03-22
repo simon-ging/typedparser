@@ -36,6 +36,7 @@ try:
     from typing import get_origin, get_args
 except ImportError:
     # python<3.8
+    # note that attrs automatically installs this and importlib-metadata for old python versions
     from typing_extensions import get_origin, get_args
 
 # default conversions allow to convert instead of raising errors in case of matching types
@@ -214,7 +215,7 @@ def _attrs_from_dict(
         raise TypeError(
             f"Failed getting type hints for {cls} with input '{input_dict}'. Error occurred at: "
             f"{'.'.join(current_position)}. {e}\n\nError context: {more_error_info}."
-            "Potential reasons: You used an old python version <3.10, used from __future__ "
+            "Potential reasons: You used an old python version <=3.8, used from __future__ "
             "import annotations, and annotated something as dict[str, int]. "
             "This does not work together with get_type_hints. Solution: "
             "Annotate with typing.Dict[str, int] instead of dict[str, int], or upgrade python."

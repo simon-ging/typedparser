@@ -2,13 +2,22 @@
 
 <p align="center">
 <a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py37.yml">
-  <img alt="build 3.7 status" title="build 3.7 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py37.yml?branch=main&label=build%203.7" />
+  <img alt="build 3.7 status" title="build 3.7 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py37.yml?branch=main&label=python%203.7" />
+</a>
+<a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py38.yml">
+  <img alt="build 3.8 status" title="build 3.8 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py38.yml?branch=main&label=python%203.8" />
+</a>
+<a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py39.yml">
+  <img alt="build 3.9 status" title="build 3.9 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py39.yml?branch=main&label=python%203.9" />
 </a>
 <a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py310.yml">
-  <img alt="build 3.10 status" title="build 3.10 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py310.yml?branch=main&label=build%203.10" />
+  <img alt="build 3.10 status" title="build 3.10 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py310.yml?branch=main&label=python%203.10" />
+</a>
+<a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py311.yml">
+  <img alt="build 3.11 status" title="build 3.11 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py311.yml?branch=main&label=python%203.11" />
 </a>
 <a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py312.yml">
-  <img alt="build 3.12 status" title="build 3.12 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py312.yml?branch=main&label=build%203.12" />
+  <img alt="build 3.12 status" title="build 3.12 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py312.yml?branch=main&label=python%203.12" />
 </a>
 <img alt="coverage" title="coverage" src="https://raw.githubusercontent.com/simon-ging/typedparser/main/docs/coverage.svg" />
 <a href="https://pypi.org/project/typedparser/">

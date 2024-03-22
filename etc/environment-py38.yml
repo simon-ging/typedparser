@@ -1,0 +1,4 @@
+channels:
+  - defaults
+dependencies:
+  - defaults::python=3.8

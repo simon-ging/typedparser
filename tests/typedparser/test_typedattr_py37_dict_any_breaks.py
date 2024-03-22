@@ -1,6 +1,6 @@
 """
 One would expect this to work, but it doesn't. The `dict[str, any]` type hint is not supported
-in Python 3.7 typing.get_type_hints function, even though the __future__ annotations import is used.
+in Python 3.8 typing.get_type_hints function, even though the __future__ annotations import is used.
 """
 from __future__ import annotations
 
@@ -16,8 +16,10 @@ class DictStrAnyCfg:
     hparams: dict[str, any] = None
 
 
-# if sys.version_info <= (3, 8):
-
-def test_dict_any_breaks():
-    # with pytest.raises(TypeError):
-    print(get_type_hints(DictStrAnyCfg))
+if sys.version_info <= (3, 8):
+    def test_dict_any_breaks():
+        with pytest.raises(TypeError):
+            print(get_type_hints(DictStrAnyCfg))
+else:
+    def test_dict_any_does_not_break():
+        assert get_type_hints(DictStrAnyCfg) == {"hparams": dict[str, any]}
