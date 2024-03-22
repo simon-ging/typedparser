@@ -19,7 +19,6 @@ from typing import (
     get_type_hints,
     Callable,
 )
-from typing_extensions import get_type_hints
 
 import attrs
 from attr import has, AttrsInstance
@@ -213,7 +212,7 @@ def _attrs_from_dict(
         type_hints = get_type_hints(cls)
     except TypeError as e:
         raise TypeError(
-            f"Failed getting type hints for {cls} with input {input_dict}. Error occurred at: "
+            f"Failed getting type hints for {cls} with input '{input_dict}'. Error occurred at: "
             f"{'.'.join(current_position)}. {e}\n\nError context: {more_error_info}."
             "Potential reasons: You used an old python version <3.10, used from __future__ "
             "import annotations, and annotated something as dict[str, int]. "

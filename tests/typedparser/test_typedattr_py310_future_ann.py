@@ -14,7 +14,7 @@ from collections.abc import Callable
 
 from typedparser import attrs_from_dict
 
-if sys.version_info >= (3, 9):
+if sys.version_info >= (3, 10):
 
     @define
     class Cfg:
