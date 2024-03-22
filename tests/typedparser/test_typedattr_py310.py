@@ -6,7 +6,6 @@ Test the pipe operator for Optional[int] type definition. (new syntax from pytho
 import sys
 from collections import defaultdict
 from collections.abc import Callable
-from typing import Optional
 
 import attrs
 from attr import define
