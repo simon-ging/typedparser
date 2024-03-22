@@ -16,7 +16,7 @@ class DictStrAnyCfg:
     hparams: dict[str, any] = None
 
 
-if sys.version_info <= (3, 8):
+if sys.version_info < (3, 9):
     def test_dict_any_breaks():
         with pytest.raises(TypeError):
             print(get_type_hints(DictStrAnyCfg))
