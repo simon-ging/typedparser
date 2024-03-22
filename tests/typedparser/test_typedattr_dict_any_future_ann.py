@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import get_type_hints, Dict
+
 import pytest
 from attr import define
 
@@ -8,7 +10,7 @@ from typedparser import attrs_from_dict
 
 @define
 class DictStrAnyCfg:
-    hparams: dict[str, any] = None
+    hparams: Dict[str, any] = None
 
 
 def test_dict_str_any_success():
@@ -19,7 +21,7 @@ def test_dict_str_any_success():
 
 @define
 class DictStrStrCfg:
-    hparams: dict[str, str] = None
+    hparams: Dict[str, str] = None
 
 
 def test_dict_str_str_wrong_value():

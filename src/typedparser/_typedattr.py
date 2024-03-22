@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import collections
 from functools import partial
 from inspect import isclass
@@ -17,6 +19,7 @@ from typing import (
     get_type_hints,
     Callable,
 )
+from typing_extensions import get_type_hints
 
 import attrs
 from attr import has, AttrsInstance
@@ -206,7 +209,17 @@ def _attrs_from_dict(
         ) from e
 
     # typecheck and unfold nested values in the attrs instance
-    type_hints = get_type_hints(cls)
+    try:
+        type_hints = get_type_hints(cls)
+    except TypeError as e:
+        raise TypeError(
+            f"Failed getting type hints for {cls} with input {input_dict}. Error occurred at: "
+            f"{'.'.join(current_position)}. {e}\n\nError context: {more_error_info}."
+            "Potential reasons: You used an old python version <3.10, used from __future__ "
+            "import annotations, and annotated something as dict[str, int]. "
+            "This does not work together with get_type_hints. Solution: "
+            "Annotate with typing.Dict[str, int] instead of dict[str, int], or upgrade python."
+        ) from e
     for att in all_atts:
         name = att.name
         value = getattr(attrs_inst, name)
