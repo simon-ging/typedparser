@@ -171,4 +171,3 @@ pylint typedparser
 python -m pytest --cov
 pylint tests
 ~~~
-
