@@ -1,6 +1,7 @@
 """
 Duplicate of test_typedparser_py39.py with added future annotations
 """
+
 # pylint: disable=duplicate-code
 
 from __future__ import annotations
@@ -9,8 +10,9 @@ import sys
 from typing import Optional
 
 import pytest
+from attrs import define
 
-from typedparser import add_argument, TypedParser, define
+from typedparser import add_argument, TypedParser
 from typedparser.funcs import check_args_for_pytest
 
 if sys.version_info >= (3, 9):

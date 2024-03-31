@@ -1,13 +1,15 @@
 """
 Extend action is only available in Python 3.9+.
 """
+
 # pylint: disable=unsubscriptable-object
 import sys
 from typing import Optional
 
 import pytest
+from attrs import define
 
-from typedparser import add_argument, TypedParser, define
+from typedparser import add_argument, TypedParser
 from typedparser.funcs import check_args_for_pytest
 
 if sys.version_info >= (3, 9):

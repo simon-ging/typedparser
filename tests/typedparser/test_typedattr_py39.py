@@ -8,8 +8,7 @@ from collections import defaultdict
 from collections.abc import Callable
 from typing import Optional
 
-import attrs
-from attr import define
+from attrs import define, asdict
 
 from typedparser import attrs_from_dict
 
@@ -31,7 +30,7 @@ if sys.version_info >= (3, 9):
     # @pytest.mark.skipif(sys.version_info < (3, 8), reason="requires python3.9 or higher")
     def test_typedattr_py39():
         c = attrs_from_dict(Cfg, {}, strict=True)
-        assert attrs.asdict(c) == {
+        assert asdict(c) == {
             "f1": 12,
             "f2": None,
             "f3": (12, "a"),
