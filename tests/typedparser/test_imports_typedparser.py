@@ -115,7 +115,11 @@ class ImportFromSourceChecker(NodeVisitor):
             # out which module they were defined in... in that case there's not much we can do here, since we cannot
             # easily figure out where we *should* be importing this from in the first place.
             if isinstance(attr, type) or callable(attr):
-                attribute_module = attr.__module__
+                try:
+                    attribute_module = attr.__module__
+                except AttributeError:
+                    # e.g. functools.partial outupt does not have __module__ and breaks here
+                    continue
             else:
                 continue
 
