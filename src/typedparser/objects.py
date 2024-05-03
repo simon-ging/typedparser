@@ -4,16 +4,19 @@ Generic utilities for python objects
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
+from attr import has, AttrsInstance
+from attrs import fields
 from collections.abc import Mapping, Iterable
 from copy import deepcopy
 from functools import partial
 from typing import Any, Callable, Type, List
 
-import numpy as np
-from attr import has, AttrsInstance
-from attrs import fields
-
 AttrsClass = Type[AttrsInstance]
+
+try:
+    import numpy as np
+except ImportError:
+    np = None
 
 
 def get_attr_names(cls: AttrsClass) -> List[str]:
@@ -270,7 +273,7 @@ def _compare_leaf(
     d1: Any, d2: Any, _depth: int, rtol=1.0e-5, atol=1.0e-8, equal_nan=False, prefix=""
 ) -> List[str]:
     # at this point the 2 leaves are guaranteed to be the same type
-    if isinstance(d1, np.ndarray):
+    if np is not None and isinstance(d1, np.ndarray):
         comp = np.allclose(d1, d2, rtol=rtol, atol=atol, equal_nan=equal_nan)
     else:
         comp = d1 == d2
