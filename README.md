@@ -19,6 +19,12 @@
 <a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py312.yml">
   <img alt="build 3.12 status" title="build 3.12 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py312.yml?branch=main&label=python%203.12" />
 </a>
+<a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py37-full.yml">
+  <img alt="build 3.7 full status" title="build 3.7 full status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py37-full.yml?branch=main&label=python%203.7%20full" />
+</a>
+<a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py312-full.yml">
+  <img alt="build 3.12 full status" title="build 3.12 full status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py312-full.yml?branch=main&label=python%203.12%20full" />
+</a>
 <img alt="coverage" title="coverage" src="https://raw.githubusercontent.com/simon-ging/typedparser/main/docs/coverage.svg" />
 <a href="https://pypi.org/project/typedparser/">
   <img alt="version" title="version" src="https://img.shields.io/pypi/v/typedparser?color=success" />
