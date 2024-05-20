@@ -16,12 +16,10 @@ from typing import (
 )
 
 import attrs
-import numpy as np
 import pytest
 from attr import define
 
-from typedparser import definenumpy, attrs_from_dict, NamedTupleMixin
-from typedparser.objects import flatten_dict
+from typedparser import attrs_from_dict, NamedTupleMixin
 
 
 @define
@@ -150,13 +148,6 @@ class CfgWithDefaultDictNestedUntyped:
     f3: Any = CfgWithDefaultDict()
 
 
-@definenumpy
-class CfgWithNumpy:
-    f1: np.ndarray = np.array([1, 7])
-    f2: np.ndarray = np.array([[2, 4]])
-    f3: List[np.ndarray] = [np.array([1, 2]), np.array([3, 4])]
-
-
 @define
 class CfgIntFloat:
     f1: int = 7
@@ -173,12 +164,6 @@ class CfgPositional:
     f1: int
     f2: int = 7
 
-
-_ref_cfg_with_numpy = {
-    "f1": np.array([1, 7]),
-    "f2": np.array([[2, 4]]),
-    "f3": [np.array([1, 2]), np.array([3, 4])],
-}
 
 _REMOVE_KEY = f"__{__name__}_REMOVE_KEY__"
 
@@ -259,13 +244,6 @@ _REMOVE_KEY = f"__{__name__}_REMOVE_KEY__"
             TypeError,
             {**_ref_cfg_with_dict, "f4": {(True, 8): 12}},
         ),
-        (
-            {"f1": 30, "f2": np.array([1, 6])},
-            CfgWithNumpy,
-            TypeError,
-            {"f3": _ref_cfg_with_numpy["f3"]},
-        ),
-        ({}, CfgWithNumpy, None, _ref_cfg_with_numpy),
         ({}, CfgWithAny, None, {"f1": 12, "f2": None}),
         ({"f2": [7, 8, 9]}, CfgWithAny, None, {"f1": 12, "f2": [7, 8, 9]}),
         # note: the attrs.as_dict() removes the defaultdict
@@ -318,28 +296,9 @@ def test_typedattr(fixture_test_cases):
     print(f"Got {c}")
     print(f"          asserting output")
     cand_dict = attrs.asdict(c)
-
-    ref_dict_flat = flatten_dict(ref_dict)
-    cand_dict_flat = flatten_dict(cand_dict)
-    all_values = list(ref_dict_flat.values()) + list(cand_dict_flat.values())
-    if any(isinstance(v, np.ndarray) for v in all_values):
-        # special case: numpy must be compared with .all()
-        assert set(ref_dict_flat.keys()) == set(
-            cand_dict_flat.keys()
-        ), f"Mismatch in flat keys. Original dicts: {ref_dict} != {cand_dict}"
-        print(f"Ref  flat {ref_dict}")
-        print(f"Cand flat {cand_dict}")
-        for k, v_ref in ref_dict_flat.items():
-            v_cand = cand_dict_flat[k]
-            if isinstance(v_ref, np.ndarray):
-                assert (v_cand == v_ref).all()
-                continue
-            assert v_cand == v_ref
-    else:
-        # in other cases the dict comparison works out
-        print(f"Ref  {ref_dict}")
-        print(f"Cand {cand_dict}")
-        assert cand_dict == ref_dict
+    print(f"Ref  {ref_dict}")
+    print(f"Cand {cand_dict}")
+    assert cand_dict == ref_dict
     print()
 
 
@@ -376,21 +335,6 @@ def test_skip_unknowns():
     # with default slots=True this will not work
     with pytest.raises(AttributeError):
         _out = attrs_from_dict(CfgSlotsTrue, ref, skip_unknowns=False, strict=False)
-
-
-@definenumpy
-class CfgNumpyLocal:
-    f1: np.ndarray = np.array([1, 7])
-
-
-def test_numpy_comparison():
-    c1 = CfgNumpyLocal()
-    c2 = CfgNumpyLocal()
-    assert c1 == c2
-    c3 = CfgNumpyLocal(f1=np.array([1, 7]))
-    assert c1 == c3
-    c4 = CfgNumpyLocal(f1=np.array([1, 8]))
-    assert c1 != c4
 
 
 @define

@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 
 from typedparser.objects import (
@@ -17,7 +16,6 @@ from typedparser.objects import (
             {"sub": {"str_val": "value_mod"}, "int_vals": [2, 4]},
             id="nested",
         ),
-        pytest.param([np.array([1, 2]), np.array([3, 4])], [[1, 2], [3, 4]], id="numpytolist"),
         pytest.param("not_nested", "not_nested_mod", id="flat"),
     ],
 )
@@ -43,8 +41,6 @@ def _modifier_fn(obj):
         return obj * 2
     if isinstance(obj, str):
         return f"{obj}_mod"
-    if isinstance(obj, np.ndarray):
-        return obj.tolist()
     raise ValueError(f"Unknown leaf type: {type(obj)}")
 
 

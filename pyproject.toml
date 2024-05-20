@@ -26,6 +26,9 @@ classifiers = [
 ]
 dynamic = ["version", "dependencies"]
 
+[project.optional-dependencies]
+full = ["numpy"]
+
 [project.urls]
 Project-URL = "https://github.com/simon-ging/typedparser"
 
