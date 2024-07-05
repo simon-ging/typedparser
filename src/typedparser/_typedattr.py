@@ -145,6 +145,12 @@ def _attrs_from_dict(
 ):
     if current_position is None:
         current_position = []
+    if isinstance(input_dict_or_attrs, str):
+        raise TypeError(
+            f"Expected a dictionary or attrs instance, got type '{type(input_dict_or_attrs)}' "
+            f"value '{input_dict_or_attrs}' at position '{'.'.join(current_position)}' (root "
+            f"if empty).\n\nError context: {more_error_info}."
+        )
     _print_fn(f"Parsing {cls} from {input_dict_or_attrs}")
     input_cls = type(input_dict_or_attrs)
     if has(input_cls):
