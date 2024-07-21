@@ -2,7 +2,7 @@ import argparse
 from typing import Any, Dict
 
 from attr import AttrsInstance
-from attrs import has, fields_dict
+from attrs import has, fields_dict, asdict
 
 from ._typedattr import attrs_from_dict
 from .objects import get_attr_names
@@ -120,8 +120,8 @@ def parse_typed_args(
             f"Arguments received from argparse {args_desc} "
             f"are missing from argument definition '{typed_args_class.__name__}'. "
             f"This probably means there is a mismatch between the call to add_argument() "
-            f"and the attribute name."
-            # f" Available keys in '{typed_args_class.__name__}': {fields_keys}."
+            f"and the attribute name. "
+            f"Available keys in '{typed_args_class.__name__}': {fields_keys}."
         )
         if strict:
             raise KeyError(missing_err)
