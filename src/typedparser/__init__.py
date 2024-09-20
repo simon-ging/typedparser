@@ -14,4 +14,4 @@ __all__ = [
     "get_attr_names",
 ]
 
-__version__ = "0.18.5"
+__version__ = "0.18.6"
