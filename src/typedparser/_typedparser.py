@@ -1,10 +1,9 @@
 # from __future__ import annotations  # do not use here, it breaks everything
 
 import argparse
+from attr import field, define
 from dataclasses import dataclass
 from typing import Optional, Type, Any
-
-from attr import field, define
 
 from ._typedattr import AttrsClass
 from .custom_format import CustomArgparseFmt
@@ -104,3 +103,30 @@ def add_argument(
 class VerboseQuietArgs:
     verbose: bool = add_argument(shortcut="-v", help="Increase verbosity", action="store_true")
     quiet: bool = add_argument(shortcut="-q", help="Reduce verbosity", action="store_true")
+
+
+@define(slots=False)  # slots false to allow multi inheritance
+class TaskSplitterArgs:
+    start: int = add_argument(shortcut="-s", type=int, default=0, help="Where to start processing")
+    num: Optional[int] = add_argument(shortcut="-n", type=int, help="Number of tasks to process.")
+
+
+def split_list_given_task_splitter_args(
+    in_list, task_splitter_args: TaskSplitterArgs, print_fn=None
+):
+    start, num = task_splitter_args.start, task_splitter_args.num
+    return split_list_for_processing(in_list, start, num, print_fn=print_fn)
+
+
+def split_list_for_processing(in_list, start: int = 0, num: Optional[int] = None, print_fn=None):
+    len_in_list = len(in_list)
+    if start > 0:
+        in_list = in_list[start:]
+    if num is not None:
+        in_list = in_list[:num]
+    if print_fn is not None:
+        print_fn(
+            f"Split list for processing, input length {len_in_list}, starting at {start}, "
+            f"processing max {num} reduced to {len(in_list)}"
+        )
+    return in_list
