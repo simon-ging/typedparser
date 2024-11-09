@@ -1,6 +1,7 @@
 """
 Duplicate of test_typedattr.py with added future annotations.
 """
+
 # pylint: disable=duplicate-code
 
 from __future__ import annotations

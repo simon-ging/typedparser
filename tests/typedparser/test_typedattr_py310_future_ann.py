@@ -2,15 +2,16 @@
 Test the pipe operator for Optional[int] type definition. (new syntax from python 3.10)
 with added future annotations.
 """
+
 # pylint: disable=unsubscriptable-object
 from __future__ import annotations
 
+import sys
 from collections import defaultdict
+from collections.abc import Callable
 
 import attrs
-import sys
 from attr import define
-from collections.abc import Callable
 
 from typedparser import attrs_from_dict
 

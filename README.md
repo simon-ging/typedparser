@@ -49,7 +49,7 @@ pip install typedparser
 2. Define and type the fields with `typedparser.add_argument` - the syntax extends [add_argument from argparse](https://docs.python.org/3/library/argparse.html#the-add-argument-method).
 3. Parse the args with `TypedParser` and enjoy args with type hints. Disable typechecking by setting `strict=False`.
 
-~~~python
+```python
 from typing import Optional
 from attrs import define
 from typedparser import add_argument, TypedParser
@@ -78,8 +78,7 @@ def main():
 if __name__ == "__main__":
     main()
 
-~~~
-
+```
 
 ## Features
 
@@ -109,7 +108,7 @@ use as `-x 1 -x 2` to get `[1, 2]` in the args instance.
 Define the class hierarchy and parse the input using `attrs_from_dict`.
 Use `@define(slots=False)` to allow multiple inheritance and setting attributes later.
 
-~~~python
+```python
 from attrs import define
 from typing import Optional
 from typedparser import attrs_from_dict
@@ -129,8 +128,7 @@ class CfgNested:
 
 print(attrs_from_dict(CfgNested, {"sub_cfg": {"foo": 1, "bar": 2}}))
 # CfgNested(sub_cfg=Cfg(foo=1, bar=2))
-~~~
-
+```
 
 ### Strict mode (default)
 
@@ -168,7 +166,7 @@ The following behaviour stems from the `attrs` package:
 Clone repository and cd into. Setup python 3.7 or higher. 
 Note: Some tests are skipped for python 3.7.
 
-~~~bash
+```bash
 pip install -e .
 pip install pytest pytest-cov pylint
 pylint typedparser
@@ -176,4 +174,4 @@ pylint typedparser
 # run tests
 python -m pytest --cov
 pylint tests
-~~~
+```

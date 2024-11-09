@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import get_type_hints, Dict
+from typing import Dict
 
 import pytest
 from attr import define

@@ -1,6 +1,7 @@
 """
 Test using builtins and collections.abc for the type definitions. (new syntax from python 3.9)
 """
+
 # pylint: disable=unsubscriptable-object
 
 import sys

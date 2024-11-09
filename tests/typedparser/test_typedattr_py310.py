@@ -1,6 +1,7 @@
 """
 Test the pipe operator for Optional[int] type definition. (new syntax from python 3.10)
 """
+
 # pylint: disable=unsubscriptable-object
 
 import sys

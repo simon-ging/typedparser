@@ -4,6 +4,7 @@ This test will import all modules in typedparser and check that all imports are 
 Note: We do not want to depend on packg https://github.com/simon-ging/packg due to circular ref.
 Therefore we copy paste module packg.import_from_source here.
 """
+
 # begin copy paste
 import logging
 from ast import parse, NodeVisitor, ImportFrom
