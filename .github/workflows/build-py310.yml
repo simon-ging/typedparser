@@ -34,11 +34,15 @@ jobs:
       uses: conda-incubator/setup-miniconda@v3
       with:
         activate-environment: ${{ env.W_ENV_NAME }}
+        miniforge-version: latest
+        channels: conda-forge
+        conda-remove-defaults: true
 #
     - name: Collect information
       id: collect-info
       run: |
         conda info
+        conda config --show channels
         echo "----------"
         _now=$(date -u '+%s')
         echo "today=$(date -u '+%Y%m%d' -d @${_now})" >> $GITHUB_OUTPUT

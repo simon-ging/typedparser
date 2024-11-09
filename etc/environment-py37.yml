@@ -1,4 +1,4 @@
 channels:
-  - defaults
+  - conda-forge
 dependencies:
-  - defaults::python=3.7
+  - conda-forge::python=3.7
