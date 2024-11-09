@@ -75,6 +75,7 @@ disable = [
     'disallowed-name', 'redefined-outer-name', 'use-implicit-booleaness-not-comparison-to-zero',
     'eval-used', 'unknown-option-value', 'arguments-differ', 'subprocess-run-check',
     'use-implicit-booleaness-not-comparison-to-string', 'use-dict-literal',
+    'useless-suppression', 'too-many-positional-arguments',
 ]
 
 [tool.pylint.format]
