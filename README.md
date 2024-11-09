@@ -1,9 +1,6 @@
 # typedparser
 
 <p align="center">
-<a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py37.yml">
-  <img alt="build 3.7 status" title="build 3.7 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py37.yml?branch=main&label=python%203.7" />
-</a>
 <a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py38.yml">
   <img alt="build 3.8 status" title="build 3.8 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py38.yml?branch=main&label=python%203.8" />
 </a>
@@ -18,9 +15,6 @@
 </a>
 <a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py312.yml">
   <img alt="build 3.12 status" title="build 3.12 status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py312.yml?branch=main&label=python%203.12" />
-</a>
-<a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py37-full.yml">
-  <img alt="build 3.7 full status" title="build 3.7 full status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py37-full.yml?branch=main&label=python%203.7%20full" />
 </a>
 <a href="https://github.com/simon-ging/typedparser/actions/workflows/build-py312-full.yml">
   <img alt="build 3.12 full status" title="build 3.12 full status" src="https://img.shields.io/github/actions/workflow/status/simon-ging/typedparser/build-py312-full.yml?branch=main&label=python%203.12%20full" />
@@ -37,7 +31,7 @@ Includes typechecking and conversion utilities to parse a dictionary into an att
 
 ## Install
 
-Requires `python>=3.7`
+Requires `python>=3.8`
 
 ```bash
 pip install typedparser

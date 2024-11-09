@@ -31,13 +31,7 @@ try:
 except ImportError:
     UnionType = None
 
-try:
-    # python>=3.8
-    from typing import get_origin, get_args
-except ImportError:
-    # python<3.8
-    # note that attrs automatically installs this and importlib-metadata for old python versions
-    from typing_extensions import get_origin, get_args
+from typing import get_origin, get_args
 
 # default conversions allow to convert instead of raising errors in case of matching types
 # e.g. create Path given str, or create float given int

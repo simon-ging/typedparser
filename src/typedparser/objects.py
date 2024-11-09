@@ -5,12 +5,13 @@ Generic utilities for python objects
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from attr import has, AttrsInstance
-from attrs import fields
 from collections.abc import Mapping, Iterable
 from copy import deepcopy
 from functools import partial
 from typing import Any, Callable, Type, List
+
+from attr import has, AttrsInstance
+from attrs import fields
 
 AttrsClass = Type[AttrsInstance]
 

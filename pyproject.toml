@@ -7,7 +7,7 @@ name = "typedparser"
 description = "Extension for python argparse with typehints and typechecks."
 readme = "README.md"
 authors = [{ "name" = "simon-ging" }]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 license = { text = "Apache-2.0" }
 keywords = ["attrs", "typing", "dict", "attr"]
 classifiers = [
@@ -15,7 +15,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
