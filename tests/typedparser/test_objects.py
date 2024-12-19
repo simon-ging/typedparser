@@ -7,6 +7,15 @@ from typedparser.objects import (
     flatten_dict,
     invert_dict_of_dict,
     invert_list_of_dict,
+    get_all_base_classes,
+    is_standard_mapping,
+    is_standard_iterable,
+    is_any_mapping,
+    is_any_iterable,
+    is_iterable,
+    check_object_equality,
+    big_obj_to_short_str,
+    compare_nested_objects,
 )
 
 
@@ -55,7 +64,9 @@ def _modifier_fn(obj):
             None,
             id="nested1",
         ),
-        pytest.param({"a": 1, "b": [2, 3]}, {"a": 1, "b#0": 2, "b#1": 3}, None, id="nested2"),
+        pytest.param(
+            {"a": 1, "b": [2, 3]}, {"a": 1, "b#0": 2, "b#1": 3}, None, id="nested2"
+        ),
         pytest.param(
             {"a": 1, "b": {"c": 2, "d": 3}, "e": [1, 2, "6"]},
             {"a": 1, "b/c": 2, "b/d": 3, "e#0": 1, "e#1": 2, "e#2": "6"},
@@ -63,7 +74,10 @@ def _modifier_fn(obj):
             id="docstring",
         ),
         pytest.param(
-            {"a": 1, "b": {"c": 2, "d": 3}}, {"a": 1, "b/c": 2, "b/d": 3}, None, id="nested_no_list"
+            {"a": 1, "b": {"c": 2, "d": 3}},
+            {"a": 1, "b/c": 2, "b/d": 3},
+            None,
+            id="nested_no_list",
         ),
         pytest.param({"a": 1, "b": 2}, {"a": 1, "b": 2}, None, id="flat"),
     ],
@@ -167,3 +181,61 @@ def test_invert_list_of_dict():
     input_list = [{"a": 1, "b": 2}, {"a": 3, "b": 4}]
     expected_output = {"a": [1, 3], "b": [2, 4]}
     assert invert_list_of_dict(input_list) == expected_output
+
+
+class BaseClass:
+    pass
+
+
+class DerivedClass(BaseClass):
+    pass
+
+
+def test_get_all_base_classes():
+    bases = list(get_all_base_classes(DerivedClass))
+    print(bases)
+    assert bases == [BaseClass]
+
+
+def test_is_standard_mapping():
+    assert is_standard_mapping({"key": "value"})
+    assert not is_standard_mapping([1, 2, 3])
+    assert not is_standard_mapping("not a dict")
+
+
+def test_is_standard_iterable():
+    assert is_standard_iterable([1, 2, 3])
+    assert is_standard_iterable((1, 2, 3))
+    assert not is_standard_iterable("string")
+    assert not is_standard_iterable(123)
+
+
+def test_is_any_mapping():
+    assert is_any_mapping({"key": "value"})
+    assert not is_any_mapping([1, 2, 3])
+    assert not is_any_mapping("not a dict")
+
+
+def test_is_any_iterable():
+    assert is_any_iterable([1, 2, 3])
+    assert is_any_iterable((1, 2, 3))
+    assert is_any_iterable("string")
+    assert not is_any_iterable(123)
+
+
+def test_is_iterable():
+    assert is_iterable([1, 2, 3])
+    assert is_iterable((1, 2, 3))
+    assert not is_iterable("string")
+    assert not is_iterable(123)
+
+
+def test_check_object_equality():
+    assert check_object_equality({"a": 1}, {"a": 1})
+    assert not check_object_equality({"a": 1}, {"a": 2})
+
+
+def test_big_obj_to_short_str():
+    assert big_obj_to_short_str(None) == "None"
+    assert big_obj_to_short_str({"key": "value"}) == "dict len 1"
+    assert big_obj_to_short_str([1, 2, 3]) == "list len 3"

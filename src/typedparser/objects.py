@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 from collections.abc import Mapping, Iterable
 from copy import deepcopy
 from functools import partial
-from typing import Any, Callable, Type, List
+from typing import Any, Callable, Type, List, Generator, Iterable, Iterator
 
 from attr import has, AttrsInstance
 from attrs import fields
@@ -26,10 +26,26 @@ def get_attr_names(cls: AttrsClass) -> List[str]:
     return [att.name for att in fields(cls)]  # noqa
 
 
-def get_all_base_classes(klass: type) -> List[type]:
-    for base in klass.__bases__:
-        yield base
-        yield from get_all_base_classes(base)
+# def _get_all_base_classes_rec(klass: type) -> Generator[type, None, None]:
+#     for base in klass.__bases__:
+#         yield base
+#         yield from _get_all_base_classes_rec(base)
+
+
+def get_all_base_classes(input_class: type) -> List[type]:
+    classes = {}
+
+    def _get_all_base_classes_rec(class_here: type):
+        for base in class_here.__bases__:
+            if base == object:
+                continue
+            if base in classes:
+                continue
+            classes[base] = base
+            _get_all_base_classes_rec(base)
+
+    _get_all_base_classes_rec(input_class)
+    return list(classes.values())
 
 
 def is_standard_mapping(d: Any) -> bool:
