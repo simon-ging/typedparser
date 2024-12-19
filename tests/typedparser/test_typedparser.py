@@ -363,3 +363,22 @@ def test_subparser(args_input, gt_dict):
 
     args = TypedParser.from_parser(parser, arg_config16, strict=True).parse_args(args_input)
     check_args_for_pytest(args, gt_dict)
+
+
+@define
+class arg_config17:
+    foo: int = add_argument(type=int, help="An integer argument")
+    bar: str = add_argument(type=str, help="A string argument")
+
+
+def test_typed_parser_with_valid_args():
+    parser = TypedParser.create_parser(arg_config17)
+    args = parser.parse_args(["--foo", "10", "--bar", "test"])
+    assert args.foo == 10
+    assert args.bar == "test"
+
+
+def test_typed_parser_with_missing_args():
+    parser = TypedParser.create_parser(arg_config17)
+    with pytest.raises(TypeError):
+        parser.parse_args([])  # No arguments provided, default None cannot be parsed as int

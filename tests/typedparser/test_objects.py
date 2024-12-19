@@ -136,3 +136,15 @@ def test_dicts_with_different_keys():
     input_list = [{"a": 1}, {"b": 2}]
     expected_output = {"a": [1], "b": [2]}
     assert invert_list_of_dict(input_list) == expected_output
+import pytest
+from typedparser.objects import get_attr_names
+from attr import define
+
+@define
+class SampleClass:
+    attr1: int
+    attr2: str
+
+def test_get_attr_names():
+    names = get_attr_names(SampleClass)
+    assert set(names) == {"attr1", "attr2"}

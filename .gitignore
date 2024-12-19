@@ -83,3 +83,5 @@ coverage.xml
 .dmypy.json
 dmypy.json
 
+.aider*
+.env
