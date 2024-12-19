@@ -239,3 +239,14 @@ def test_big_obj_to_short_str():
     assert big_obj_to_short_str(None) == "None"
     assert big_obj_to_short_str({"key": "value"}) == "dict len 1"
     assert big_obj_to_short_str([1, 2, 3]) == "list len 3"
+
+
+def test_compare_nested_objects():
+    obj1 = {"a": 1, "b": {"c": 2, "d": 3}}
+    obj2 = {"a": 1, "b": {"c": 2, "d": 3}}
+    obj3 = {"a": 1, "b": {"c": 2, "d": 4}}
+    obj4 = {"a": 1, "b": {"c": 2}}
+
+    assert compare_nested_objects(obj1, obj2) == []
+    assert compare_nested_objects(obj1, obj3) != []
+    assert compare_nested_objects(obj1, obj4) != []
