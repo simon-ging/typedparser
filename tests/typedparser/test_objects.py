@@ -64,9 +64,7 @@ def _modifier_fn(obj):
             None,
             id="nested1",
         ),
-        pytest.param(
-            {"a": 1, "b": [2, 3]}, {"a": 1, "b#0": 2, "b#1": 3}, None, id="nested2"
-        ),
+        pytest.param({"a": 1, "b": [2, 3]}, {"a": 1, "b#0": 2, "b#1": 3}, None, id="nested2"),
         pytest.param(
             {"a": 1, "b": {"c": 2, "d": 3}, "e": [1, 2, "6"]},
             {"a": 1, "b/c": 2, "b/d": 3, "e#0": 1, "e#1": 2, "e#2": "6"},

@@ -166,9 +166,7 @@ def flatten_dict(
     parser = parser_class()
 
     def _check_key(key_inner):
-        assert (
-            separator_for_dict not in key_inner and separator_for_list not in key_inner
-        ), (
+        assert separator_for_dict not in key_inner and separator_for_list not in key_inner, (
             f"Separators '{separator_for_dict}' and '{separator_for_list}' not allowed in key "
             f"'{key_inner}' when flattening dict."
         )
@@ -180,9 +178,7 @@ def flatten_dict(
                 k_inner_str = str(k_inner)
                 _check_key(k_inner_str)
                 items_inner.extend(
-                    _flatten_leaf(
-                        v_inner, prefix=f"{prefix}{separator_for_dict}{k_inner_str}"
-                    )
+                    _flatten_leaf(v_inner, prefix=f"{prefix}{separator_for_dict}{k_inner_str}")
                 )
         elif parser.is_iterable_fn(d_inner):
             for i, v_inner in enumerate(d_inner):
@@ -254,9 +250,7 @@ def compare_nested_objects(
             else:
                 for i, v in enumerate(d1):
                     all_errors.extend(
-                        _compare_nested_objects(
-                            v, d2[i], depth + 1, prefix=f"{prefix}[{i}]"
-                        )
+                        _compare_nested_objects(v, d2[i], depth + 1, prefix=f"{prefix}[{i}]")
                     )
             return all_errors
 
@@ -273,9 +267,7 @@ def compare_nested_objects(
                 # check if attributes are defined in the same way
                 d1_att = getattr(d1, att_name)
                 d2_att = getattr(d2, att_name)
-                if type(d1_att) != type(
-                    d2_att
-                ):  # noqa  # pylint: disable=unidiomatic-typecheck
+                if type(d1_att) != type(d2_att):  # noqa  # pylint: disable=unidiomatic-typecheck
                     all_errors.append(
                         f"{prefix} Attribute {att_name} type mismatch: "
                         f"({type(d1_att)}) != ({type(d2_att)})"
@@ -346,9 +338,7 @@ def big_obj_to_short_str(d: Any) -> str:
         return f"Object of type {class_name}"
 
 
-def invert_dict_of_dict(
-    dict_of_dict: dict[str, dict[str, any]]
-) -> dict[str, dict[str, any]]:
+def invert_dict_of_dict(dict_of_dict: dict[str, dict[str, any]]) -> dict[str, dict[str, any]]:
     """
     Invert a dictionary of dictionaries. Useful for creating dataframes.
 

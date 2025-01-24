@@ -389,19 +389,24 @@ def test_namedtuplemixin():
         next(iter(no))
 
     assert list(reversed(tu)) == [None, 12]
+
+
 import pytest
 from typedparser import attrs_from_dict
+
 
 @define
 class CfgWithOptional:
     f1: int = 12
     f2: Optional[int] = None
 
+
 def test_attrs_from_dict_with_optional():
     input_data = {"f1": 10, "f2": None}
     result = attrs_from_dict(CfgWithOptional, input_data)
     assert result.f1 == 10
     assert result.f2 is None
+
 
 def test_attrs_from_dict_with_invalid_type():
     input_data = {"f1": "string_instead_of_int"}
