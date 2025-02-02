@@ -103,6 +103,9 @@ def add_argument(
 class VerboseQuietArgs:
     verbose: bool = add_argument(shortcut="-v", help="Increase verbosity", action="store_true")
     quiet: bool = add_argument(shortcut="-q", help="Reduce verbosity", action="store_true")
+    loglevel: str | None = add_argument(
+        type=str, help="Set log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)"
+    )
 
 
 @define(slots=False)  # slots false to allow multi inheritance
