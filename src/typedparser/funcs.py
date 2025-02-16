@@ -22,7 +22,7 @@ def add_typed_args(parser: argparse.ArgumentParser, typed_args_class) -> None:
     ), f"'{parser}' is not an argparse.ArgumentParser"
     assert has(
         typed_args_class
-    ), f"'{typed_args_class}' is not an attrs class. Decorate with @typedargs"
+    ), f"'{typed_args_class}' is not an attrs class. Decorate with @attrs.define"
 
     defargs = fields_dict(typed_args_class)
     all_names = list(defargs.keys())
