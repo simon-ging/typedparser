@@ -4,14 +4,17 @@ Generic utilities for python objects
 
 from __future__ import annotations
 
+from collections import defaultdict
+
+import inspect
 from abc import ABCMeta, abstractmethod
+from attr import has, AttrsInstance
+from attrs import fields
 from collections.abc import Mapping, Iterable
 from copy import deepcopy
 from functools import partial
-from typing import Any, Callable, Type, List
+from typing import Type, List, Any, Callable
 
-from attr import has, AttrsInstance
-from attrs import fields
 
 AttrsClass = Type[AttrsInstance]
 
@@ -376,3 +379,103 @@ def invert_list_of_dict(list_of_dict: list[dict[str, any]]) -> dict[str, list[an
                 dict_of_list[field] = []
             dict_of_list[field].append(value)
     return dict_of_list
+
+
+def inspect_obj(obj) -> str:
+    strs = []
+    members = inspect.getmembers(obj)
+    srt = defaultdict(list)
+    for key, value in members:
+        if key.startswith("_"):
+            continue
+        # print(key, type(value))
+        srt[value.__class__.__name__].append(key)
+    for key in sorted(srt.keys()):
+        for attr in sorted(srt[key]):
+            strs.append(f"{key} {attr}\n")
+    return "".join(strs)
+
+
+def convert_dataclass_instance_to_dict(d_instance, d_class) -> dict:
+    return {k: getattr(d_instance, k) for k in d_class.__dataclass_fields__.keys()}
+
+
+def analyze_flat_object(value_) -> str:
+    output_strs = []
+    if hasattr(value_, "shape"):
+        output_strs.append(f"shape={value_.shape}")
+    elif hasattr(value_, "__len__"):
+        output_strs.append(f"len={len(value_)}")
+    if hasattr(value_, "dtype"):
+        output_strs.append(f"dtype={value_.dtype}")
+    output_strs.append(get_obj_str_with_max_len(value_, max_len=50))
+    return " ".join(output_strs)
+
+
+def analyze_nested_object_structure(
+    d: Any,
+    is_iterable_fn: Callable = is_standard_iterable,
+    is_mapping_fn: Callable = is_standard_mapping,
+    depth: int = 0,
+) -> str:
+    # this assumes fixed structure objects (i.e. each item of a container has the same structure)
+    pre = ""  # f" " * depth
+    value_strs = []
+
+    if is_mapping_fn(d):
+        # dict-like
+        for k, v in d.items():
+            value_str = analyze_nested_object_structure(v, is_iterable_fn, is_mapping_fn, depth + 1)
+            value_strs.append(f"{pre} dict {k} -> {value_str}")
+            break
+    elif is_iterable_fn(d):
+        # list-like
+        for i, v in enumerate(d):
+            value_str = analyze_nested_object_structure(v, is_iterable_fn, is_mapping_fn, depth + 1)
+            value_strs.append(f"{pre} list #{i}: {value_str}")
+            break
+    else:
+        # leaf
+        value_str = analyze_flat_object(d)
+        value_strs.append(f"{pre} {value_str}")
+    return "\n".join(value_strs)
+
+
+def print_datapoint(dp, max_str_len=200):
+    for k, v in dp.items():
+        if hasattr(v, "shape"):
+            v_str = f"shape={v.shape} dtype={v.dtype}"
+        elif isinstance(v, (list, tuple)):
+            v_str = f"len={len(v)} {v[:5]}..."
+        else:
+            v_str = f"class={v.__class__.__name__} {v}"
+        if len(v_str) > max_str_len:
+            v_str = v_str[:max_str_len] + "..."
+        print(f"    {k}: {v_str}")
+
+
+def print_item_recursively(item, depth=0):
+    """Print information about e.g. a datapoint containing nested items of various types."""
+    pre = "  " * depth
+    cls = item.__class__.__name__
+    if isinstance(item, dict):
+        for k, v in item.items():
+            print(f"{pre}{k}")
+            print_item_recursively(v, depth=depth + 1)
+    elif isinstance(item, (list, tuple)):
+        for v in item:
+            print_item_recursively(v, depth=depth + 1)
+    elif hasattr(item, "shape"):
+        print(f"{pre}{item.shape} ({cls})")
+    else:
+        print(f"{pre}{item} ({cls})")
+
+
+def get_obj_str_with_max_len(obj: Any, max_len: int = 100):
+    obj_str = str(obj)
+    obj_str = (
+        obj_str[:max_len] + f"... (total_str_len={len(obj_str)})"
+        if len(obj_str) > max_len
+        else obj_str
+    )
+    return obj_str
