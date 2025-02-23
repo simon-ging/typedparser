@@ -27,7 +27,7 @@
 
 Typing extension for python argparse using [attrs](https://www.attrs.org/en/stable/).
 
-Includes typechecking and conversion utilities to parse a dictionary into an attrs instance. 
+Includes typechecking and conversion utilities to parse a dictionary into an attrs instance.
 
 ## Install
 
@@ -50,7 +50,7 @@ from typedparser import add_argument, TypedParser
 
 
 @define
-class Args:   
+class Args:
     # omit the argument name to have it inferred from the field name
     foo: str = add_argument(positional=True)
     bar: int = add_argument(shortcut="-b", type=int, default=0)
@@ -60,8 +60,8 @@ class Args:
     # foo: str = add_argument("foo")
     # bar: int = add_argument("-b", "--bar", type=int, default=0)
     # opt: Optional[str] = add_argument("--opt")
-    
-    
+
+
 
 def main():
     parser = TypedParser.create_parser(Args, strict=True)
@@ -157,7 +157,7 @@ The following behaviour stems from the `attrs` package:
 
 ## Install locally and run tests
 
-Clone repository and cd into. Setup python 3.7 or higher. 
+Clone repository and cd into. Setup python 3.7 or higher.
 Note: Some tests are skipped for python 3.7.
 
 ```bash
