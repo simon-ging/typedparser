@@ -4,17 +4,16 @@ Generic utilities for python objects
 
 from __future__ import annotations
 
-from collections import defaultdict
-
 import inspect
 from abc import ABCMeta, abstractmethod
-from attr import has, AttrsInstance
-from attrs import fields
+from collections import defaultdict
 from collections.abc import Mapping, Iterable
 from copy import deepcopy
 from functools import partial
 from typing import Type, List, Any, Callable
 
+from attr import has, AttrsInstance
+from attrs import fields
 
 AttrsClass = Type[AttrsInstance]
 
@@ -479,3 +478,73 @@ def get_obj_str_with_max_len(obj: Any, max_len: int = 100):
         else obj_str
     )
     return obj_str
+
+
+def _get_indent(depth, key, fmt="  "):
+    indent = fmt * depth
+    if key is not None:
+        indent = f"{indent}{key}: "
+    return indent
+
+
+def repr_value(
+    value, max_list_items=3, max_dict_items=8, max_str_len=200, depth=0, key=None, fmt="  "
+):
+    repr_value_recursor = partial(
+        repr_value,
+        max_list_items=max_list_items,
+        max_dict_items=max_dict_items,
+        max_str_len=max_str_len,
+        depth=depth + 1,
+        fmt=fmt,
+    )
+    typ = type(value).__name__
+    indent = _get_indent(depth, key, fmt=fmt)
+    indent_plus_1 = _get_indent(depth + 1, None, fmt=fmt)
+    indent_minus_1 = _get_indent(depth - 1, None, fmt=fmt)
+    if isinstance(value, str):
+        value_str = value
+        if len(value) > max_str_len > 0:
+            value_str = "".join(
+                [value[: max_str_len // 2], " ... ", value[-max_str_len // 2 - 5 :]]
+            )
+        return f"{indent}{typ} len={len(value)}: {value_str}"
+
+    if isinstance(value, bytes):
+        value_str = value
+        if len(value) > max_str_len > 0:
+            value_str = b"".join([value[:100], b" ... ", value[-95:]])
+        return f"{indent}{typ} len={len(value)}: {value_str}"
+
+    # if isinstance(value, torch.Tensor):
+    if hasattr(value, "shape") and hasattr(value, "dtype"):
+        return f"{indent}{typ} shape={value.shape} dtype={value.dtype}"
+
+    if is_any_mapping(value):
+        keys = list(value.keys())
+        show_len = len(keys)
+        if max_dict_items > 0:
+            show_len = min(max_dict_items, len(keys))
+        reprs = [f"{indent_minus_1}{repr_value_recursor(value[k],key=k)}" for k in keys[:show_len]]
+        if show_len < len(keys):
+            reprs.append("...")
+        out_str = f"{indent}{typ} len={len(keys)}\n" + "\n".join(reprs)
+        return out_str
+
+    # note: handle all iterables that should not get recursed into, above this line.
+    if is_any_iterable(value):
+        show_len = len(value)
+        if max_list_items > 0:
+            show_len = min(max_list_items, len(value))
+        reprs = [repr_value_recursor(v) for v in value[:show_len]]
+        if show_len < len(value):
+            reprs.append(f"{indent_plus_1}...")
+        out_str = f"{indent}{typ} len={len(value)}\n" + "\n".join(reprs)
+        return out_str
+
+    return f"{indent}{typ}: {str(value)}"
+
+    # if value is None:
+    #     return f"{indent}{typ}: None"
+    #
+    # raise NotImplementedError(f"repr_value not implemented for {typ}")
