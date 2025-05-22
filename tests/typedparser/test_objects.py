@@ -16,6 +16,7 @@ from typedparser.objects import (
     check_object_equality,
     big_obj_to_short_str,
     compare_nested_objects,
+    repr_value,
 )
 
 
@@ -248,3 +249,73 @@ def test_compare_nested_objects():
     assert compare_nested_objects(obj1, obj2) == []
     assert compare_nested_objects(obj1, obj3) != []
     assert compare_nested_objects(obj1, obj4) != []
+
+
+def test_repr_value_simple_list():
+    dct = [1.0, 3.0, 4.0, 5.0, 6.0]
+    result = repr_value(dct)
+    expected = """list len=5
+  float: 1.0
+  float: 3.0
+  float: 4.0
+  ..."""
+    assert result == expected
+
+
+def test_repr_value_nested_list():
+    dct = [[1.0, 3.0, 4.0, 5.0, 6.0], [1.0, 3.0, 4.0, 5.0, 6.0]]
+    result = repr_value(dct)
+    expected = """list len=2
+  list len=5
+    float: 1.0
+    float: 3.0
+    float: 4.0
+    ...
+  list len=5
+    float: 1.0
+    float: 3.0
+    float: 4.0
+    ..."""
+    assert result == expected
+
+
+def test_repr_value_list_of_dicts():
+    data = [
+        {
+            "name": "Alice",
+            "age": 29,
+            "city": "New York",
+            "email": "alice@example.com",
+            "is_active": True,
+            "hobbies": ["reading", "traveling"],
+            "score": 85.5,
+        },
+        {
+            "name": "Bob",
+            "age": 35,
+            "city": "San Francisco",
+            "email": "bob@example.com",
+            "is_active": False,
+            "hobbies": ["cycling", "cooking"],
+            "score": 90.3,
+        },
+    ]
+    result = repr_value(data)
+    # Since the output is quite long, we'll check key parts of it
+    assert "list len=2" in result
+    assert "dict len=7" in result
+    assert "name: str len=5: Alice" in result
+    assert "name: str len=3: Bob" in result
+    assert "hobbies" in result
+    assert "score" in result
+
+
+def test_repr_value_nested_dicts():
+    dct = [{"floats": [1.0, 3.0, 4.0, 5.0, 6.0]}, {"something": "else"}]
+    result = repr_value(dct)
+    # Check key parts of the output
+    assert "list len=2" in result
+    assert "dict len=1" in result
+    assert "floats" in result
+    assert "something" in result
+    assert "else" in result
