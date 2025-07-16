@@ -132,6 +132,11 @@ def modify_nested_object(
         if parser.is_mapping_fn(d_inner):
             for k, v in d_inner.items():
                 d_inner[k] = recursive_fn(v)
+        elif isinstance(d_inner, tuple):  # tuple does not support in-place modification
+            d_inner_new = []
+            for v in d_inner:
+                d_inner_new.append(recursive_fn(v))
+            d_inner = tuple(d_inner_new)
         elif parser.is_iterable_fn(d_inner):
             for i, v in enumerate(d_inner):
                 d_inner[i] = recursive_fn(v)

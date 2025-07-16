@@ -1,4 +1,4 @@
-# todo test shortcut and positional wrong usage
+# TODO test shortcut and positional wrong usage
 import argparse
 from copy import deepcopy
 from typing import List, Optional
