@@ -37,15 +37,14 @@ def test_nested_objects(input_object, expected_object):
 
 
 @pytest.mark.parametrize(
-    "input_object, expected_exception",
+    "input_object",
     [
-        pytest.param(set((7, 7, 2, "something")), TypeError, id="set"),
-        pytest.param(tuple((7, 7, 2, "something")), TypeError, id="tuple"),
+        pytest.param(set((7, 7, 2, "something")), id="set"),
+        pytest.param(tuple((7, 7, 2, "something")), id="tuple"),
     ],
 )
-def test_nested_objects_failures(input_object, expected_exception):
-    with pytest.raises(expected_exception):
-        modify_nested_object(input_object, _modifier_fn, return_copy=True)
+def test_nested_objects_with_unmodifiables(input_object):
+    modify_nested_object(input_object, _modifier_fn, return_copy=True)
 
 
 def _modifier_fn(obj):

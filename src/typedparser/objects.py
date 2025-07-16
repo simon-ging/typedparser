@@ -109,6 +109,8 @@ def modify_nested_object(
     """
     Traverse a python object and apply a modifier function to all leaves.
 
+    Note: This also modifies tuples and sets.
+
     Args:
         d: object to modify (e.g. dict)
         modifier_fn: modifier function to apply to all leaves
@@ -133,10 +135,9 @@ def modify_nested_object(
             for k, v in d_inner.items():
                 d_inner[k] = recursive_fn(v)
         elif isinstance(d_inner, tuple):  # tuple does not support in-place modification
-            d_inner_new = []
-            for v in d_inner:
-                d_inner_new.append(recursive_fn(v))
-            d_inner = tuple(d_inner_new)
+            d_inner = tuple(recursive_fn(v) for v in d_inner)
+        elif isinstance(d_inner, set):  # set does not support in-place modification
+            d_inner = set(recursive_fn(v) for v in d_inner)
         elif parser.is_iterable_fn(d_inner):
             for i, v in enumerate(d_inner):
                 d_inner[i] = recursive_fn(v)

@@ -16,18 +16,6 @@ def test_nested_objects_numpy(input_object, expected_object):
     assert modified_object == expected_object
 
 
-@pytest.mark.parametrize(
-    "input_object, expected_exception",
-    [
-        pytest.param(set((7, 7, 2, "something")), TypeError, id="set"),
-        pytest.param(tuple((7, 7, 2, "something")), TypeError, id="tuple"),
-    ],
-)
-def test_nested_objects_failures(input_object, expected_exception):
-    with pytest.raises(expected_exception):
-        modify_nested_object(input_object, _modifier_fn, return_copy=True)
-
-
 def _modifier_fn(obj):
     if isinstance(obj, int):
         return obj * 2
