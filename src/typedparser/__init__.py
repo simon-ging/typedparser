@@ -1,11 +1,11 @@
-from ._typedattr import definenumpy, attrs_from_dict, NamedTupleMixin
+from ._typedattr import NamedTupleMixin, attrs_from_dict, definenumpy
 from ._typedparser import (
-    add_argument,
+    TaskSplitterArgs,
     TypedParser,
     VerboseQuietArgs,
-    TaskSplitterArgs,
-    split_list_given_task_splitter_args,
+    add_argument,
     split_list_for_processing,
+    split_list_given_task_splitter_args,
 )
 from .custom_format import CustomArgparseFmt
 from .objects import get_attr_names
@@ -25,4 +25,4 @@ __all__ = [
 ]
 
 
-__version__ = "0.32.1"
+__version__ = "0.32.2"

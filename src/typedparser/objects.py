@@ -7,12 +7,12 @@ from __future__ import annotations
 import inspect
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict
-from collections.abc import Mapping, Iterable
+from collections.abc import Iterable, Mapping
 from copy import deepcopy
 from functools import partial
-from typing import Type, List, Any, Callable
+from typing import Any, Callable, List, Type
 
-from attr import has, AttrsInstance
+from attr import AttrsInstance, has
 from attrs import fields
 
 AttrsClass = Type[AttrsInstance]

@@ -1,13 +1,14 @@
 # from __future__ import annotations  # do not use here, it breaks everything
 
 import argparse
-from attr import field, define
 from dataclasses import dataclass
-from typing import Optional, Type, Any
+from typing import Any, Optional, Type
+
+from attr import define, field
 
 from ._typedattr import AttrsClass
 from .custom_format import CustomArgparseFmt
-from .funcs import parse_typed_args, add_typed_args
+from .funcs import add_typed_args, parse_typed_args
 
 
 @dataclass

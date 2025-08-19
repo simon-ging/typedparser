@@ -1,9 +1,9 @@
 import dataclasses
 
 from typedparser.objects import (
-    inspect_obj,
     analyze_flat_object,
     analyze_nested_object_structure,
+    inspect_obj,
     print_datapoint,
     print_item_recursively,
 )

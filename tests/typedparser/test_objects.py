@@ -2,20 +2,20 @@ import pytest
 from attr import define
 
 from typedparser.objects import (
-    get_attr_names,
-    modify_nested_object,
+    big_obj_to_short_str,
+    check_object_equality,
+    compare_nested_objects,
     flatten_dict,
+    get_all_base_classes,
+    get_attr_names,
     invert_dict_of_dict,
     invert_list_of_dict,
-    get_all_base_classes,
-    is_standard_mapping,
-    is_standard_iterable,
-    is_any_mapping,
     is_any_iterable,
+    is_any_mapping,
     is_iterable,
-    check_object_equality,
-    big_obj_to_short_str,
-    compare_nested_objects,
+    is_standard_iterable,
+    is_standard_mapping,
+    modify_nested_object,
     repr_value,
 )
 

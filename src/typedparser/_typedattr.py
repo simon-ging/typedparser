@@ -5,33 +5,33 @@ from functools import partial
 from inspect import isclass
 from pathlib import Path
 from typing import (
-    Tuple,
-    Union,
-    Dict,
     AbstractSet,
-    Iterable,
-    Mapping,
-    Collection,
-    Type,
     Any,
-    List,
-    Optional,
-    get_type_hints,
     Callable,
+    Collection,
+    Dict,
+    Iterable,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    Type,
+    Union,
+    get_type_hints,
 )
 
 import attrs
-from attr import has, AttrsInstance
-from attrs import define, fields_dict, fields, Attribute
+from attr import AttrsInstance, has
+from attrs import Attribute, define, fields, fields_dict
 
-from .objects import check_object_equality, RecursorInterface, StrictRecursor, AttrsClass
+from .objects import AttrsClass, RecursorInterface, StrictRecursor, check_object_equality
 
 try:
     from types import UnionType
 except ImportError:
     UnionType = None
 
-from typing import get_origin, get_args
+from typing import get_args, get_origin
 
 # default conversions allow to convert instead of raising errors in case of matching types
 # e.g. create Path given str, or create float given int

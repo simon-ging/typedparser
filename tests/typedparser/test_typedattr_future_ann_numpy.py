@@ -12,7 +12,7 @@ from typing import List
 import attrs
 import pytest
 
-from typedparser import definenumpy, attrs_from_dict
+from typedparser import attrs_from_dict, definenumpy
 from typedparser.objects import flatten_dict
 
 np = pytest.importorskip("numpy", reason="Skipping numpy tests because numpy is not installed.")

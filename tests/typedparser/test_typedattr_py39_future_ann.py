@@ -11,7 +11,7 @@ from collections import defaultdict
 from collections.abc import Callable
 from typing import Optional
 
-from attrs import define, asdict
+from attrs import asdict, define
 
 from typedparser import attrs_from_dict
 

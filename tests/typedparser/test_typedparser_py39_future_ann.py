@@ -12,7 +12,7 @@ from typing import Optional
 import pytest
 from attrs import define
 
-from typedparser import add_argument, TypedParser
+from typedparser import TypedParser, add_argument
 from typedparser.funcs import check_args_for_pytest
 
 if sys.version_info >= (3, 9):

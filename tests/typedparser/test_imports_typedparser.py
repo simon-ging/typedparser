@@ -7,12 +7,13 @@ Therefore we copy paste module packg.import_from_source here.
 
 # begin copy paste
 import logging
-from ast import parse, NodeVisitor, ImportFrom
-from importlib import util as import_util, import_module
+from ast import ImportFrom, NodeVisitor, parse
+from importlib import import_module
+from importlib import util as import_util
 from importlib.machinery import ModuleSpec
 from os import path
 from pkgutil import iter_modules
-from typing import Any, List, Iterator, Optional
+from typing import Any, Iterator, List, Optional
 
 
 def _is_test_module(module_name: str) -> bool:

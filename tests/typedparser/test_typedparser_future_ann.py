@@ -13,7 +13,7 @@ from typing import List, Optional
 import pytest
 from attrs import define
 
-from typedparser import add_argument, TypedParser
+from typedparser import TypedParser, add_argument
 from typedparser.funcs import check_args_for_pytest, parse_typed_args
 
 # ********** Test for TypedParser **********

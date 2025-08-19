@@ -10,24 +10,24 @@ from collections import defaultdict
 from copy import deepcopy
 from typing import (
     Any,
-    Optional,
-    Union,
-    DefaultDict,
-    Tuple,
-    List,
-    FrozenSet,
-    Dict,
-    Set,
     Callable,
+    DefaultDict,
+    Dict,
+    FrozenSet,
     Iterable,
+    List,
+    Optional,
     Sequence,
+    Set,
+    Tuple,
+    Union,
 )
 
 import attrs
 import pytest
 from attr import define
 
-from typedparser import attrs_from_dict, NamedTupleMixin
+from typedparser import NamedTupleMixin, attrs_from_dict
 
 
 @define
