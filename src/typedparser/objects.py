@@ -105,6 +105,7 @@ def modify_nested_object(
     modifier_fn: Callable,
     return_copy: bool = False,
     parser_class: Type[RecursorInterface] = StrictRecursor,
+    tuple_to_list: bool = False,
 ) -> Any:
     """
     Traverse a python object and apply a modifier function to all leaves.
@@ -116,6 +117,7 @@ def modify_nested_object(
         modifier_fn: modifier function to apply to all leaves
         return_copy: whether to copy the object before modifying it
         parser_class: which parser to use for iterable and mapping checks
+        tuple_to_list: if True, convert tuples to lists
 
     Examples:
         >>> e_dict = {'a': 1, 'b': {'c': 2, 'd': 3}}
@@ -126,16 +128,17 @@ def modify_nested_object(
 
     """
     parser = parser_class()
+    tuple_type = list if tuple_to_list else tuple
+    if return_copy:
+        d = deepcopy(d)
 
     def _modify_nested_object(d_inner: Any, depth: int = 0) -> Any:
         recursive_fn = partial(_modify_nested_object, depth=depth + 1)
-        if return_copy:
-            d_inner = deepcopy(d_inner)
         if parser.is_mapping_fn(d_inner):
             for k, v in d_inner.items():
                 d_inner[k] = recursive_fn(v)
         elif isinstance(d_inner, tuple):  # tuple does not support in-place modification
-            d_inner = tuple(recursive_fn(v) for v in d_inner)
+            d_inner = tuple_type(recursive_fn(v) for v in d_inner)
         elif isinstance(d_inner, set):  # set does not support in-place modification
             d_inner = set(recursive_fn(v) for v in d_inner)
         elif parser.is_iterable_fn(d_inner):
