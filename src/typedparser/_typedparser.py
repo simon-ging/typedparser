@@ -40,7 +40,7 @@ class TypedParser:
     ):
         return cls(parser, typed_args_class, strict=strict)
 
-    def parse_args(self, args=None, namespace=None):
+    def parse_args(self, args=None, namespace=None) -> Any:
         args = self.parser.parse_args(args, namespace)
         typed_args = self._convert_args_to_typed_args(args)
         return typed_args
@@ -57,7 +57,7 @@ class TypedParser:
 
 def add_argument(
     *name_or_flags: str, shortcut: Optional[str] = None, positional: bool = False, **kwargs
-):
+) -> Any:
     """
     Interface matches ArgumentParser.add_argument:
     https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_argument
