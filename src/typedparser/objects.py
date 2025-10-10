@@ -349,7 +349,7 @@ def big_obj_to_short_str(d: Any) -> str:
         return f"Object of type {class_name}"
 
 
-def invert_dict_of_dict(dict_of_dict: dict[str, dict[str, any]]) -> dict[str, dict[str, any]]:
+def invert_dict_of_dict(dict_of_dict: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
     """
     Invert a dictionary of dictionaries. Useful for creating dataframes.
 
@@ -369,7 +369,7 @@ def invert_dict_of_dict(dict_of_dict: dict[str, dict[str, any]]) -> dict[str, di
     return regular_dict
 
 
-def invert_list_of_dict(list_of_dict: list[dict[str, any]]) -> dict[str, list[any]]:
+def invert_list_of_dict(list_of_dict: list[dict[str, Any]]) -> dict[str, list[Any]]:
     """
     Invert a list of dictionaries. Useful for creating dataframes.
 

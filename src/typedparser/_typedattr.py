@@ -327,7 +327,7 @@ def _parse_nested(
             current_position=current_position,
         )
 
-    # resolve any
+    # resolve any (actually "any" is not supposed to be used as a type.)
     if typ in [Any, any]:
         return value
 
