@@ -32,7 +32,7 @@ def format_exception(e, with_traceback=False) -> str:
     return f"{tb_str}{out_str}"
 
 
-def get_installed_top_level_packages() -> list[str]:
+def get_installed_top_level_packages() -> List[str]:
     """
     Return a sorted list of top-level import names provided by all
     installed distributions in the current environment.
