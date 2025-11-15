@@ -6,6 +6,7 @@ Therefore we copy paste module packg.import_from_source here.
 """
 
 # begin copy paste
+
 import logging
 from ast import ImportFrom, NodeVisitor, parse
 from importlib import import_module
@@ -13,7 +14,24 @@ from importlib import util as import_util
 from importlib.machinery import ModuleSpec
 from os import path
 from pkgutil import iter_modules
-from typing import Any, Iterator, List, Optional
+from typing import Any, Iterator, List, Optional, Tuple, Union
+
+import traceback
+
+
+def format_exception(e, with_traceback=False) -> str:
+    error_str, error_name = str(e), type(e).__name__
+    if error_str == "":
+        out_str = error_name
+    else:
+        out_str = f"{error_name}: {error_str}"
+
+    if not with_traceback:
+        return out_str
+
+    tb_list = traceback.format_tb(e.__traceback__)
+    tb_str = "".join(tb_list)
+    return f"{tb_str}{out_str}"
 
 
 def _is_test_module(module_name: str) -> bool:
@@ -56,7 +74,23 @@ def recurse_modules(
 
 
 class ImportFromSourceChecker(NodeVisitor):
-    def __init__(self, module: str, module_list_to_ignore_not_found: Optional[List] = None):
+    def __init__(
+        self,
+        module: str,
+        ignore_modules: Optional[Union[List, Tuple]] = None,
+        this_package_only: bool = False,
+    ):
+        """
+        Visitor that checks all import statements in the given module and runs the imports.
+
+        Args:
+            module: The module to check imports for.
+            ignore_modules: A list of modules to ignore import errors for.
+            this_package_only: If true, only check imports within the same top-level package.
+                This will speed up the imports because it will never import things like numpy,
+                however if you have a bad import like "import doesnotexist" it will not be caught.
+        """
+        ignore_modules = list(ignore_modules) if ignore_modules is not None else []
         module_spec = import_util.find_spec(module)
         is_pkg = (
             module_spec is not None
@@ -66,15 +100,16 @@ class ImportFromSourceChecker(NodeVisitor):
 
         self._module = module if is_pkg else ".".join(module.split(".")[:-1])
         self._top_level_module = self._module.split(".")[0]
-        self._module_list_to_ignore_not_found = module_list_to_ignore_not_found
+        self._ignore_modules = ignore_modules
+        self._this_package_only = this_package_only
 
     def visit_ImportFrom(self, node: ImportFrom) -> Any:
-        # Check that there are no relative imports that attempt to read from a parent module. We've found that there
-        # generally is no good reason to have such imports.
+        # Check that there are no relative imports that attempt to read from a parent module.
+        # We've found that there generally is no good reason to have such imports.
         if node.level >= 2:
             raise ValueError(
-                f"Import in {self._module} attempts to import from parent module using relative import. Please "
-                f"switch to absolute import instead."
+                f"Import in {self._module} attempts to import from parent module using "
+                f"relative import. Please switch to absolute import instead."
             )
 
         # Figure out which module to import in the case where this is a...
@@ -89,23 +124,28 @@ class ImportFromSourceChecker(NodeVisitor):
             # (3) relative import where a submodule is specified (ie: "from .bar import foo")
             module_to_import = f"{self._module}.{node.module}"
 
-        # We're only looking at imports of objects defined inside this top-level package
-        if not module_to_import.startswith(self._top_level_module):
-            return
+        if self._this_package_only:
+            # We're only looking at imports of objects defined inside this top-level package
+            # However this can mask import problems
+            if not module_to_import.startswith(self._top_level_module):
+                return
 
         # Actually import the module and iterate through all the objects potentially exported by it.
         print(f"    Importing module: {module_to_import}")
         try:
             module = import_module(module_to_import)
-        except ModuleNotFoundError as e:
-            if self._module_list_to_ignore_not_found is not None:
-                for module_to_ignore_not_found in self._module_list_to_ignore_not_found:
-                    if module_to_import.startswith(module_to_ignore_not_found):
-                        print(f"        Ignore missing module: {module_to_import}")
-                        return
+        except Exception as e:
+            for ignore_module in self._ignore_modules:
+                if module_to_import == ignore_module or module_to_import.startswith(
+                    f"{ignore_module}."
+                ):
+                    print(
+                        f"packg.testing.import_from_source: Ignore exception in module "
+                        f"{module_to_import}\n{format_exception(e)}"
+                    )
+                    return
             raise e
         for alias in node.names:
-            # assert hasattr(module, alias.name), f"Imported {alias.name} from {module_to_import}, but this object does not exist. in {module}"
             if not hasattr(module, alias.name):
                 if alias.name == "*":
                     continue
@@ -113,8 +153,9 @@ class ImportFromSourceChecker(NodeVisitor):
             else:
                 attr = getattr(module, alias.name)
 
-            # For some objects (pretty much everything except for classes and functions), we are not able to figure
-            # out which module they were defined in... in that case there's not much we can do here, since we cannot
+            # For some objects (pretty much everything except for classes and functions),
+            # we are not able to figure out which module they were defined in...
+            # in that case there's not much we can do here, since we cannot
             # easily figure out where we *should* be importing this from in the first place.
             if isinstance(attr, type) or callable(attr):
                 try:
@@ -125,8 +166,8 @@ class ImportFromSourceChecker(NodeVisitor):
             else:
                 continue
 
-            # Figure out where we should be importing this class from, and assert that the *actual* import we found
-            # matches the place we *should* import from.
+            # Figure out where we should be importing this class from, and assert that
+            # the *actual* import we found matches the place we *should* import from.
             should_import_from = self._get_module_should_import(module_to_import=attribute_module)
             if module_to_import != should_import_from:
                 logging.warning(
@@ -138,10 +179,11 @@ class ImportFromSourceChecker(NodeVisitor):
 
     def _get_module_should_import(self, module_to_import: str) -> str:
         """
-        This function figures out the correct import path for "module_to_import" from the "self._module" module in
-        this instance. The trivial solution here would be to always just return "module_to_import", but we want
-        to actually take into account the fact that some submodules can be "private" (ie: start with an "_"), in
-        which case we should only import from them if self._module is internal to that private module.
+        This function figures out the correct import path for "module_to_import" from the
+        "self._module" module in this instance. The trivial solution here would be to always
+        just return "module_to_import", but we want to actually take into account the fact that
+        some submodules can be "private" (ie: start with an "_"), in which case we should only
+        import from them if self._module is internal to that private module.
         """
         module_components = module_to_import.split(".")
         result: List[str] = []
@@ -159,9 +201,13 @@ def apply_visitor(module: str, visitor: NodeVisitor) -> None:
     assert module_spec is not None
     assert module_spec.origin is not None
 
-    with open(module_spec.origin, "r", encoding="utf-8") as source_file:
-        ast = parse(source=source_file.read(), filename=module_spec.origin)
+    source_file = module_spec.origin
+    if source_file.endswith(".abi3.so"):
+        print(f"Skipping rust binary: {source_file}")
+        return
 
+    with open(module_spec.origin, "r", encoding="utf-8") as fh:
+        ast = parse(source=fh.read(), filename=module_spec.origin)
     visitor.visit(ast)
 
 
