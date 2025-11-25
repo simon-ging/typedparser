@@ -4,7 +4,7 @@ from typing import Any, Dict
 from attr import AttrsInstance
 from attrs import fields_dict, has
 
-from ._typedattr import attrs_from_dict
+from .typedattr import attrs_from_dict
 from .objects import get_attr_names
 
 
