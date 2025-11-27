@@ -188,6 +188,10 @@ class ImportFromSourceChecker(NodeVisitor):
         self._this_package_only = this_package_only
 
     def visit_ImportFrom(self, node: ImportFrom) -> Any:
+        # Skip imports that are indented (inside functions, if statements, etc.)
+        if node.col_offset > 0:
+            return
+
         # Check that there are no relative imports that attempt to read from a parent module.
         # We've found that there generally is no good reason to have such imports.
         if node.level >= 2:
