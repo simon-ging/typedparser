@@ -4,8 +4,8 @@ from typing import Any, Dict
 from attr import AttrsInstance
 from attrs import fields_dict, has
 
-from .typedattr import attrs_from_dict
 from .objects import get_attr_names
+from .typedattr import attrs_from_dict
 
 
 def add_typed_args(parser: argparse.ArgumentParser, typed_args_class) -> None:

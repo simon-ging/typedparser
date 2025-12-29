@@ -6,12 +6,12 @@ Therefore we copy paste module packg.import_from_source here.
 """
 
 import pytest
-from typedparser.import_from_source_copy import (
-    recurse_modules,
-    apply_visitor,
-    ImportFromSourceChecker,
-)
 
+from typedparser.import_from_source_copy import (
+    ImportFromSourceChecker,
+    apply_visitor,
+    recurse_modules,
+)
 
 module_list = list(recurse_modules("typedparser", ignore_tests=True, packages_only=False))
 

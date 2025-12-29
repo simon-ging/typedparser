@@ -4,14 +4,10 @@ from typing import Any, Optional, Type
 
 from attr import define, field
 
-from .typedattr import AttrsClass
 from .custom_format import CustomArgparseFmt
 from .funcs import add_typed_args, parse_typed_args
-
-from .typedattr import NamedTupleMixin, attrs_from_dict, definenumpy
-
-from .custom_format import CustomArgparseFmt
 from .objects import get_attr_names
+from .typedattr import AttrsClass, NamedTupleMixin, attrs_from_dict, definenumpy
 
 __all__ = [
     "definenumpy",
@@ -27,7 +23,7 @@ __all__ = [
     "split_list_for_processing",
 ]
 
-__version__ = "0.33.12"
+__version__ = "0.33.13"
 
 
 @dataclass
@@ -153,3 +149,5 @@ def split_list_for_processing(in_list, start: int = 0, num: Optional[int] = None
             f"processing max {num} reduced to {len(in_list)}"
         )
     return in_list
+
+
