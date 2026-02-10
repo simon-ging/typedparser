@@ -42,6 +42,7 @@ default_conversions: conversion_type = [
     ((str,), Path, None),
     ((int,), float, None),
     ((Path,), str, Path.as_posix),
+    ((str,), float, None),
 ]
 
 
@@ -267,8 +268,8 @@ def _attrs_from_dict(
 def _parse_nested(
     recursor: RecursorInterface,
     name,
-    value,
-    typ,
+    value,  # source value
+    typ,  # target type
     strict: bool = True,
     skip_unknowns: bool = False,
     conversions: conversion_type = None,

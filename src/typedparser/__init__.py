@@ -23,7 +23,7 @@ __all__ = [
     "split_list_for_processing",
 ]
 
-__version__ = "0.33.13"
+__version__ = "0.33.14"
 
 
 @dataclass
@@ -149,5 +149,3 @@ def split_list_for_processing(in_list, start: int = 0, num: Optional[int] = None
             f"processing max {num} reduced to {len(in_list)}"
         )
     return in_list
-
-
