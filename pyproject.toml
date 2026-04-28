@@ -7,7 +7,7 @@ name = "typedparser"
 description = "Extension for python argparse with typehints and typechecks."
 readme = "README.md"
 authors = [{ "name" = "simon-ging" }]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 keywords = ["attrs", "typing", "dict", "attr"]
