@@ -23,7 +23,7 @@ __all__ = [
     "split_list_for_processing",
 ]
 
-__version__ = "0.35.1"
+__version__ = "0.35.2"
 
 
 @dataclass
@@ -117,8 +117,18 @@ def add_argument(
 
 @define(slots=False)  # slots false to allow multi inheritance
 class VerboseQuietArgs:
-    verbose: bool = add_argument(shortcut="-v", help="Increase verbosity", action="store_true")
-    quiet: bool = add_argument(shortcut="-q", help="Reduce verbosity", action="store_true")
+    verbose: int = add_argument(
+        shortcut="-v",
+        help="Increase verbosity, repeat to increase more (-v, -vv, -vvv)",
+        action="count",
+        default=0,
+    )
+    quiet: int = add_argument(
+        shortcut="-q",
+        help="Reduce verbosity, repeat to reduce more (-q, -qq, -qqq)",
+        action="count",
+        default=0,
+    )
     loglevel: Optional[str] = add_argument(
         type=str, help="Set log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)"
     )
