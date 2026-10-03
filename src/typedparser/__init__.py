@@ -23,7 +23,7 @@ __all__ = [
     "split_list_for_processing",
 ]
 
-__version__ = "0.35.3"
+__version__ = "0.35.4"
 
 
 @dataclass
